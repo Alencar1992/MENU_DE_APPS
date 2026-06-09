@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
-  <title>Meu Painel Web</title>
+  <title>Meus Aplicativos</title>
+  
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#4285f4">
+  
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
+  <link rel="icon" sizes="192x192" href="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
 
   <style>
     /* Variáveis Nativas e Escalas de Sombra 3D */
@@ -43,16 +46,24 @@
       background-attachment: fixed;
     }
 
+    /* Botão Flutuante do Menu (Movido para fora do menu) */
+    #toggle-btn { 
+      position: fixed; top: 15px; left: 15px; z-index: 1001;
+      background: var(--modal-bg); color: var(--text-color); border: none; 
+      padding: 10px 15px; border-radius: 12px; cursor: pointer; font-size: 20px; 
+      box-shadow: var(--shadow-3d); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+
     /* Menu Lateral (Sidebar) */
     #sidebar { 
       width: 250px; background: var(--sidebar-color);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); /* Efeito Vidro */
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border-right: 1px solid rgba(255,255,255,0.2); 
       display: flex; flex-direction: column; transition: transform 0.3s ease, width 0.3s ease; 
       z-index: 900; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding-top: 70px; /* Espaço para não bater no botão */
     }
     
-    /* Quando retraído no PC */
     #sidebar.collapsed { width: 70px; }
     #sidebar.collapsed .menu-text, #sidebar.collapsed h3 { display: none; }
     
@@ -60,16 +71,14 @@
     .menu-item:hover { background-color: rgba(0,0,0,0.05); }
     .menu-icon { font-size: 20px; margin-right: 15px; }
 
-    #toggle-btn { 
-      background: transparent; color: var(--text-color); border: none; padding: 15px; 
-      cursor: pointer; font-size: 24px; text-align: left;
-    }
-
     /* Área Central */
-    #main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+    #main-content { 
+      flex: 1; padding: 20px; overflow-y: auto; display: flex; 
+      flex-direction: column; position: relative; padding-top: 70px; 
+    }
     #area-botoes { display: flex; gap: 25px; flex-wrap: wrap; margin-top: 20px; flex: 1; justify-content: center; align-content: flex-start; }
 
-    /* Cards dos Apps com efeito 3D Realista (Neumorphism) */
+    /* Cards dos Apps com efeito 3D */
     .app-card {
       position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
       width: 140px; height: 140px; background: var(--card-bg); border-radius: 20px;
@@ -77,16 +86,20 @@
       box-shadow: var(--shadow-3d); transition: transform 0.2s ease, box-shadow 0.2s ease;
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .app-card:active { box-shadow: var(--inset-3d); transform: scale(0.95); } /* Efeito de afundar ao clicar */
+    .app-card:active { box-shadow: var(--inset-3d); transform: scale(0.95); }
     
     .app-emoji { font-size: 45px; margin-bottom: 10px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
     .app-name { font-weight: 700; font-size: 13px; text-align: center; }
     
-    .card-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 5px; }
-    .card-btn { background: var(--bg-color); border: none; border-radius: 50%; cursor: pointer; padding: 6px; font-size: 12px; box-shadow: var(--shadow-3d); transition: 0.2s; }
+    /* Botões de Ação no Card (Editar e Compartilhar) */
+    .card-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 8px; }
+    .card-btn { 
+      background: var(--bg-color); border: none; border-radius: 50%; cursor: pointer; 
+      padding: 6px; font-size: 12px; box-shadow: var(--shadow-3d); transition: 0.2s; 
+    }
     .card-btn:active { box-shadow: var(--inset-3d); }
 
-    /* Modais 3D Realistas (Glassmorphism) */
+    /* Modais 3D Realistas */
     .modal-overlay { 
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
@@ -110,7 +123,7 @@
     .btn-salvar { background: var(--primary-blue); color: white; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); }
     .btn-fechar { background: transparent; color: var(--text-color); padding: 12px; border: 1px solid var(--text-color); border-radius: 10px; cursor: pointer; }
 
-    /* Tela de Carregamento 0 a 100% */
+    /* Tela de Carregamento */
     #progress-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 9999;
@@ -128,23 +141,23 @@
 
     /* RESPONSIVIDADE PARA CELULAR/TABLET */
     @media (max-width: 768px) {
-      /* Menu vira uma gaveta flutuante (Off-canvas) */
-      #sidebar { position: absolute; height: 100%; transform: translateX(-100%); width: 250px; }
-      /* Classe aplicada por JS para abrir no celular */
+      /* Menu vira uma gaveta flutuante e começa escondido para fora da tela */
+      #sidebar { position: fixed; height: 100vh; transform: translateX(-100%); width: 250px; left: 0; top: 0; padding-top: 70px; }
+      
+      /* Classe ativada no celular para trazer o menu para a tela */
       #sidebar.mobile-open { transform: translateX(0); } 
       
-      /* Botão de abrir menu no mobile fica fixo em cima */
-      #toggle-btn { position: absolute; top: 10px; left: 10px; z-index: 901; background: var(--modal-bg); border-radius: 10px; box-shadow: var(--shadow-3d); }
-      
-      #main-content { padding-top: 60px; /* Espaço para o botão hambúrguer */ }
+      /* Botão flutuante fica sempre visível e fixo */
+      #toggle-btn { position: fixed; top: 10px; left: 10px; z-index: 1001; }
     }
   </style>
 </head>
 <body>
 
+  <button id="toggle-btn" onclick="toggleMenu()" title="Menu">☰</button>
+
   <nav id="sidebar">
-    <button id="toggle-btn" onclick="toggleMenu()">☰</button>
-    <h3 style="padding: 15px 15px 5px 15px; margin-top: 50px;">Ajustes</h3>
+    <h3 style="padding: 0 15px 5px 15px; margin-top: 10px;">Ajustes</h3>
     
     <a class="menu-item" onclick="abrirModal('modalApp')">
       <span class="menu-icon">➕</span><span class="menu-text">Novo App</span>
@@ -155,7 +168,7 @@
   </nav>
 
   <main id="main-content">
-    <h2 style="text-align: center; margin-top: 0;">Meu Painel Web</h2>
+    <h2 style="text-align: center; margin-top: 0;">Meus Aplicativos</h2>
     
     <div id="area-botoes"></div>
 
@@ -164,7 +177,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
         <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
       </div>
-      <div>Since @2026 - Versão 1.1 - Build 09.06.26</div>
+      <div>Since @2026 - Versão 1.2 - Build 09.06.26</div>
     </footer>
   </main>
 
@@ -203,13 +216,13 @@
 
   <script>
     /**
-     * COLE SUA URL DO APPS SCRIPT AQUI
+     * IMPORTANTE: COLE SUA URL DO APPS SCRIPT AQUI
      */
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyldA2GzE2x9CqPOuTeXM67NblofydovVeo-qOKGcI7prlL1EWS0eGB61bIRD1fB2Zt/exec';
 
     let imagemBase64Global = "";
 
-    // === LÓGICA DE PROGRESSO (0 a 100%) ===
+    // === LÓGICA DE PROGRESSO ===
     let loopProgresso;
     function iniciarProgresso(mensagem) {
       document.getElementById('progress-text').innerText = mensagem;
@@ -218,54 +231,62 @@
       document.getElementById('progress-overlay').style.display = 'flex';
       
       let progressoReal = 0;
-      // Cria um simulador que sobe a barra até 90%
       loopProgresso = setInterval(() => {
-        progressoReal += Math.floor(Math.random() * 10) + 1; // Sobe aleatoriamente
-        if (progressoReal > 90) progressoReal = 90; // Trava no 90% até o servidor responder
+        progressoReal += Math.floor(Math.random() * 10) + 1;
+        if (progressoReal > 90) progressoReal = 90; 
         document.getElementById('progress-bar').style.width = progressoReal + '%';
         document.getElementById('progress-percent').innerText = progressoReal + '%';
       }, 150);
     }
 
     function finalizarProgresso() {
-      clearInterval(loopProgresso); // Para o simulador
+      clearInterval(loopProgresso);
       document.getElementById('progress-bar').style.width = '100%';
       document.getElementById('progress-percent').innerText = '100%';
-      
-      // Espera meio segundo antes de sumir com a tela, para o usuário ver o 100%
-      setTimeout(() => {
-        document.getElementById('progress-overlay').style.display = 'none';
-      }, 600);
+      setTimeout(() => { document.getElementById('progress-overlay').style.display = 'none'; }, 600);
     }
 
-    // === LÓGICA DE RESPONSIVIDADE E MODAIS ===
+    // === RESPONSIVIDADE E MODAIS ===
     function toggleMenu() { 
       const sidebar = document.getElementById('sidebar');
-      // Se a tela for menor que 768px (Celular), usa a classe de gaveta mobile
       if(window.innerWidth <= 768) {
-        sidebar.classList.toggle('mobile-open');
+        sidebar.classList.toggle('mobile-open'); // Abre/Fecha no celular
       } else {
-        sidebar.classList.toggle('collapsed');
+        sidebar.classList.toggle('collapsed'); // Recolhe no PC
       }
     }
 
     function abrirModal(id) { 
       const overlay = document.getElementById(id);
       overlay.style.display = 'flex';
-      // Pequeno delay para a transição CSS funcionar (Efeito de entrada suave)
       setTimeout(() => overlay.classList.add('show'), 10);
     }
 
     function fecharModal(id) { 
       const overlay = document.getElementById(id);
       overlay.classList.remove('show');
-      setTimeout(() => { overlay.style.display = 'none'; }, 300); // Aguarda o fade out
+      setTimeout(() => { overlay.style.display = 'none'; }, 300);
       document.getElementById('inputId').value = ''; 
     }
 
     function aplicarTema(tema) {
       if(tema === 'escuro') document.body.classList.add('dark-mode');
       else document.body.classList.remove('dark-mode');
+    }
+
+    // === COMPARTILHAMENTO NATIVO PARA CELULAR ===
+    function compartilharLink(url, nome) {
+      // Verifica se o navegador/celular tem a função de compartilhar nativa
+      if (navigator.share) {
+        navigator.share({
+          title: nome,
+          text: 'Acesse esta ferramenta no nosso painel:',
+          url: url
+        }).catch(err => console.error("Erro ao compartilhar", err));
+      } else {
+        // Se estiver no PC e não tiver a função nativa, apenas copia pro Control+C
+        navigator.clipboard.writeText(url).then(() => alert("Link copiado!"));
+      }
     }
 
     // === LER DADOS DO BANCO (GET) ===
@@ -275,7 +296,7 @@
       fetch(URL_SCRIPT)
         .then(res => res.json())
         .then(resposta => {
-          finalizarProgresso(); // Servidor respondeu, vai pra 100% e fecha!
+          finalizarProgresso();
           
           if(resposta.config) {
             aplicarTema(resposta.config.tema);
@@ -291,9 +312,11 @@
           resposta.apps.forEach(app => {
             const card = document.createElement('div');
             card.className = 'app-card';
+            // Restaurei o botão de compartilhar e a engrenagem de configuração
             card.innerHTML = `
               <div class="card-actions">
-                <button class="card-btn" onclick="prepararEdicao(${app.id}, '${app.nome}', '${app.url}', '${app.emoji}')">⚙️</button>
+                <button class="card-btn" onclick="prepararEdicao(${app.id}, '${app.nome}', '${app.url}', '${app.emoji}')" title="Editar">⚙️</button>
+                <button class="card-btn" onclick="compartilharLink('${app.url}', '${app.nome}')" title="Compartilhar">🔗</button>
               </div>
               <a href="${app.url}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; align-items:center; width:100%;">
                 <div class="app-emoji">${app.emoji}</div>
@@ -327,7 +350,7 @@
       fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) })
       .then(() => {
         finalizarProgresso();
-        setTimeout(() => carregarDados(), 700); // Recarrega a tela logo após
+        setTimeout(() => carregarDados(), 700); 
       });
     }
 
