@@ -1,19 +1,44 @@
-<div id="sidebar" style="width: 250px; background: #f4f4f4; height: 100vh;">
-  <ul id="menu-lista" style="list-style: none; padding: 20px;"></ul>
-</div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Aplicativos</title>
+</head>
+<body style="margin: 0; display: flex;">
 
-<script>
-  // URL do seu Web App publicado (com o final /exec)
-  const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyMSRsTt9OzsfskfS559YunuIwZUofyK7VDtqWMQ3f3i1MAUW1lRm7Rff4nzBeDMK6C/exec';
+  <div id="sidebar" style="width: 250px; background: #f4f4f4; height: 100vh; border-right: 1px solid #ccc;">
+    <h3 style="text-align: center; font-family: sans-serif;">Meus Apps</h3>
+    <ul id="menu-lista" style="list-style: none; padding: 20px; font-family: sans-serif; line-height: 2;">
+      </ul>
+  </div>
 
-  fetch(URL_SCRIPT)
-    .then(response => response.json())
-    .then(data => {
-      const lista = document.getElementById('menu-lista');
-      data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="${item.url}">${item.emoji} ${item.nome}</a>`;
-        lista.appendChild(li);
+  <div style="padding: 20px; font-family: sans-serif;">
+    <h1>Bem-vindo ao seu Sistema Central</h1>
+    <p>Selecione um aplicativo no menu lateral.</p>
+  </div>
+
+  <script>
+    // URL do seu Web App publicado no Google Apps Script (com o final /exec)
+    // Lembre-se de substituir o texto abaixo pela sua URL real!
+    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyMSRsTt9OzsfskfS559YunuIwZUofyK7VDtqWMQ3f3i1MAUW1lRm7Rff4nzBeDMK6C/exec';
+
+    // A função fetch vai buscar as informações do Apps Script
+    fetch(URL_SCRIPT)
+      .then(response => response.json()) // Converte a resposta recebida para o formato JSON
+      .then(data => {
+        const lista = document.getElementById('menu-lista');
+        
+        // Loop que passa por cada linha da sua planilha e cria um link (tag <a>)
+        data.forEach(item => {
+          const li = document.createElement('li');
+          // Cria o botão com o Emoji e o Nome lidos do Google Sheets
+          li.innerHTML = `<a href="${item.url}" target="_blank" style="text-decoration: none; color: #333; display: block; padding: 5px; border-radius: 4px;">${item.emoji} ${item.nome}</a>`;
+          lista.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Erro ao carregar o menu:', error);
       });
-    });
-</script>
+  </script>
+</body>
+</html>
