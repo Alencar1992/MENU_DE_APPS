@@ -48,7 +48,7 @@
 
   <script>
     // URL gerada pelo Google Apps Script
-    // Cole a sua URL correta aqui embaixo!
+    // Cole a sua URL correta aqui embaixo para conectar com a sua planilha!
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzLy8lSkmrt6H0FwWJ3jXYiDuKSXj2kcIL2cRfuQOpc18A3S_E2GQ5q1gqP6kBC5r1Q/exec';
 
     // Função que conecta na planilha para buscar os apps
@@ -76,7 +76,7 @@
       })
       .catch(error => {
         console.error('Erro ao carregar os apps:', error);
-        document.getElementById('area-botoes').innerHTML = '<p style="color: red;">Erro ao carregar.</p>';
+        document.getElementById('area-botoes').innerHTML = '<p style="color: red;">Erro ao carregar os botões.</p>';
       });
   </script>
 </body>
