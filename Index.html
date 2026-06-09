@@ -1,0 +1,19 @@
+<div id="sidebar" style="width: 250px; background: #f4f4f4; height: 100vh;">
+  <ul id="menu-lista" style="list-style: none; padding: 20px;"></ul>
+</div>
+
+<script>
+  // URL do seu Web App publicado (com o final /exec)
+  const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyMSRsTt9OzsfskfS559YunuIwZUofyK7VDtqWMQ3f3i1MAUW1lRm7Rff4nzBeDMK6C/exec';
+
+  fetch(URL_SCRIPT)
+    .then(response => response.json())
+    .then(data => {
+      const lista = document.getElementById('menu-lista');
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${item.url}">${item.emoji} ${item.nome}</a>`;
+        lista.appendChild(li);
+      });
+    });
+</script>
