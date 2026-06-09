@@ -2,42 +2,89 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel de Aplicativos</title>
+  <title>Painel Central de Aplicativos</title>
+  <style>
+    /* Reset básico para remover margens padrão e usar todo o espaço da tela */
+    body { margin: 0; display: flex; font-family: sans-serif; background-color: #f0f2f5; height: 100vh; }
+    
+    /* Estilo do Menu Lateral (Configurações) */
+    #sidebar { width: 250px; background: #ffffff; border-right: 1px solid #ccc; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+    .menu-item { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; margin-bottom: 5px;}
+    .menu-item:hover { background-color: #f4f4f4; border-radius: 4px; }
+    
+    /* Estilo da Área Principal */
+    #conteudo-principal { flex: 1; padding: 40px; overflow-y: auto; }
+    
+    /* Container para organizar os botões dos Apps lado a lado */
+    #area-botoes { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+    
+    /* Estilo visual dos Botões dos Aplicativos (Cards) */
+    .app-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 160px; height: 140px; background-color: #ffffff;
+      border-radius: 12px; text-decoration: none; color: #333;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;
+    }
+    .app-btn:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+    
+    /* Estilo do Emoji dentro do botão */
+    .app-emoji { font-size: 48px; margin-bottom: 10px; }
+    
+    /* Estilo do Nome do App dentro do botão */
+    .app-nome { font-weight: bold; text-align: center; font-size: 14px; padding: 0 10px; }
+  </style>
 </head>
-<body style="margin: 0; display: flex;">
+<body>
 
-  <div id="sidebar" style="width: 250px; background: #f4f4f4; height: 100vh; border-right: 1px solid #ccc;">
-    <h3 style="text-align: center; font-family: sans-serif;">Meus Apps</h3>
-    <ul id="menu-lista" style="list-style: none; padding: 20px; font-family: sans-serif; line-height: 2;">
-      </ul>
+  <div id="sidebar">
+    <h3>⚙️ Configurações</h3>
+    <a href="#" class="menu-item">👤 Meu Perfil</a>
+    <a href="#" class="menu-item">🎨 Aparência</a>
+    <a href="#" class="menu-item">🔒 Permissões</a>
   </div>
 
-  <div style="padding: 20px; font-family: sans-serif;">
-    <h1>Bem-vindo ao seu Sistema Central</h1>
-    <p>Selecione um aplicativo no menu lateral.</p>
+  <div id="conteudo-principal">
+    <h1>Meus Aplicativos</h1>
+    <p>Selecione um aplicativo abaixo para acessar a ferramenta:</p>
+    
+    <div id="area-botoes">
+      <p id="carregando">Buscando aplicativos na base de dados...</p>
+    </div>
   </div>
 
   <script>
     // URL do seu Web App publicado no Google Apps Script (com o final /exec)
-    // Lembre-se de substituir o texto abaixo pela sua URL real!
+    // ATENÇÃO: Substitua o texto abaixo pela sua URL real gerada no Apps Script!
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyMSRsTt9OzsfskfS559YunuIwZUofyK7VDtqWMQ3f3i1MAUW1lRm7Rff4nzBeDMK6C/exec';
 
-    // A função fetch vai buscar as informações do Apps Script
+    // A função fetch vai até o Apps Script buscar a lista JSON
     fetch(URL_SCRIPT)
-      .then(response => response.json()) // Converte a resposta recebida para o formato JSON
+      .then(response => response.json()) // Converte a resposta para o formato JSON
       .then(data => {
-        const lista = document.getElementById('menu-lista');
+        const areaBotoes = document.getElementById('area-botoes');
+        areaBotoes.innerHTML = ''; // Limpa a mensagem de "Buscando aplicativos..."
         
-        // Loop que passa por cada linha da sua planilha e cria um link (tag <a>)
+        // Loop que passa por cada linha da sua planilha
         data.forEach(item => {
-          const li = document.createElement('li');
-          // Cria o botão com o Emoji e o Nome lidos do Google Sheets
-          li.innerHTML = `<a href="${item.url}" target="_blank" style="text-decoration: none; color: #333; display: block; padding: 5px; border-radius: 4px;">${item.emoji} ${item.nome}</a>`;
-          lista.appendChild(li);
+          // Cria o elemento de link <a> que funcionará como nosso botão
+          const botao = document.createElement('a');
+          botao.href = item.url;
+          botao.target = "_blank"; // Faz o app abrir em uma nova aba do navegador
+          botao.className = "app-btn"; // Aplica o estilo CSS de "card" que criamos no topo
+          
+          // Preenche o miolo do botão com o Emoji e o Nome vindos da sua planilha
+          botao.innerHTML = `
+            <div class="app-emoji">${item.emoji}</div>
+            <div class="app-nome">${item.nome}</div>
+          `;
+          
+          // Adiciona o botão finalizado na tela principal
+          areaBotoes.appendChild(botao);
         });
       })
       .catch(error => {
-        console.error('Erro ao carregar o menu:', error);
+        console.error('Erro ao carregar os apps:', error);
+        document.getElementById('area-botoes').innerHTML = '<p style="color: red;">Erro ao carregar. Verifique a URL do Script e a conexão.</p>';
       });
   </script>
 </body>
