@@ -170,7 +170,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
         <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
       </div>
-      <div>Since @2026 - Versão 1.3 - Build 09.06.26</div>
+      <div>Since @2026 - Versão 1.5 - Build 09.06.26</div>
     </footer>
   </main>
 
@@ -189,11 +189,21 @@
   <div id="modalPerfil" class="modal-overlay">
     <div class="modal-box">
       <h2 style="margin:0; text-align:center;">Estilo e Fundo</h2>
+      
+      <label style="font-size: 12px; font-weight: bold; margin-bottom: -10px;">Tema:</label>
       <select id="selectTema" onchange="aplicarTema(this.value)">
         <option value="claro">Tema Claro (Light)</option>
         <option value="escuro">Tema Escuro (Dark 3D)</option>
       </select>
-      <input type="file" id="inputImagem" accept="image/*">
+      
+      <label style="font-size: 12px; font-weight: bold; margin-bottom: -10px; margin-top: 10px;">Plano de Fundo:</label>
+      <select id="selectFundo">
+        <option value="gta_6.png">GTA 6</option>
+        <option value="spider_man.png">Spider-Man</option>
+        <option value="combat_8.png">Combat 8</option>
+        <option value="prime.png">Prime</option>
+      </select>
+      
       <button class="btn-salvar" onclick="salvarPerfil()">Aplicar Mudanças</button>
       <button class="btn-fechar" onclick="fecharModal('modalPerfil')">Voltar</button>
     </div>
@@ -209,19 +219,22 @@
 
   <script>
     /**
-     * IMPORTANTE: COLE SUA URL DO APPS SCRIPT AQUI
+     * URL de Conexão com o Google Sheets Backend
      */
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyldA2GzE2x9CqPOuTeXM67NblofydovVeo-qOKGcI7prlL1EWS0eGB61bIRD1fB2Zt/exec';
 
-    // === INICIALIZAÇÃO IMEDIATA COM LOCALSTORAGE (FOUC FIX) ===
-    let imagemBase64Global = localStorage.getItem('meuApp_Imagem') || "";
+    // === INICIALIZAÇÃO IMEDIATA ===
+    // Agora o plano de fundo nativo e padrão é "gta_6.png" em vez de ficar vazio.
+    let imagemFundoGlobal = localStorage.getItem('meuApp_Imagem') || "gta_6.png";
     let temaSalvo = localStorage.getItem('meuApp_Tema') || "claro";
 
-    // Aplica as cores e fundo antes da página terminar de carregar
+    // Aplica as cores e fundo antes da página terminar de carregar (resolve FOUC)
     if (temaSalvo === 'escuro') document.body.classList.add('dark-mode');
-    if (imagemBase64Global) document.body.style.backgroundImage = `url('${imagemBase64Global}')`;
+    document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
 
-    // === LÓGICA DE PROGRESSO ===
+    /**
+     * Lógica visual da barra de progresso (0 a 100%)
+     */
     let loopProgresso;
     function iniciarProgresso(mensagem) {
       document.getElementById('progress-text').innerText = mensagem;
@@ -238,6 +251,9 @@
       }, 150);
     }
 
+    /**
+     * Finaliza a barra de progresso completando para 100% e ocultando a tela
+     */
     function finalizarProgresso() {
       clearInterval(loopProgresso);
       document.getElementById('progress-bar').style.width = '100%';
@@ -245,24 +261,33 @@
       setTimeout(() => { document.getElementById('progress-overlay').style.display = 'none'; }, 600);
     }
 
-    // === RESPONSIVIDADE E MODAIS ===
+    /**
+     * Abre/fecha o menu lateral baseado no tamanho da tela (Mobile/Desktop)
+     */
     function toggleMenu() { 
       const sidebar = document.getElementById('sidebar');
       if(window.innerWidth <= 768) sidebar.classList.toggle('mobile-open');
       else sidebar.classList.toggle('collapsed');
     }
 
+    /**
+     * Abre janelas modais de forma animada e atualiza seus campos padrão
+     */
     function abrirModal(id) { 
       const overlay = document.getElementById(id);
       overlay.style.display = 'flex';
       setTimeout(() => overlay.classList.add('show'), 10);
       
-      // Atualiza o select do modal caso abra e já tenha tema salvo
+      // Sincroniza os selects do perfil com o que está na memória atual
       if(id === 'modalPerfil') {
          document.getElementById('selectTema').value = localStorage.getItem('meuApp_Tema') || 'claro';
+         document.getElementById('selectFundo').value = imagemFundoGlobal;
       }
     }
 
+    /**
+     * Fecha janelas modais e limpa formulários residuais
+     */
     function fecharModal(id) { 
       const overlay = document.getElementById(id);
       overlay.classList.remove('show');
@@ -271,7 +296,7 @@
     }
 
     /**
-     * Aplica o tema na tela e salva na memória local
+     * Alterna classes CSS para Light e Dark Mode e salva na memória local
      */
     function aplicarTema(tema) {
       if(tema === 'escuro') {
@@ -283,7 +308,9 @@
       }
     }
 
-    // === COMPARTILHAMENTO ===
+    /**
+     * Permite copiar link para a área de transferência ou usar função nativa de enviar em celulares
+     */
     function compartilharLink(url, nome) {
       if (navigator.share) {
         navigator.share({ title: nome, text: 'Acesse esta ferramenta:', url: url })
@@ -293,7 +320,9 @@
       }
     }
 
-    // === LER DADOS DO BANCO (GET) ===
+    /**
+     * Busca informações no backend (Planilha Google) para popular a tela
+     */
     function carregarDados() {
       iniciarProgresso('Sincronizando...');
       
@@ -302,17 +331,19 @@
         .then(resposta => {
           finalizarProgresso();
           
-          // Sincroniza o servidor com o LocalStorage
+          // Sincroniza informações de design
           if(resposta.config) {
-            aplicarTema(resposta.config.tema);
+            if (resposta.config.tema) aplicarTema(resposta.config.tema);
             
+            // Só sobrescrevemos a imagem se houver registro no Google, senão deixamos o gta_6.png (padrão)
             if(resposta.config.imagem) {
-              document.body.style.backgroundImage = `url('${resposta.config.imagem}')`;
-              imagemBase64Global = resposta.config.imagem;
-              localStorage.setItem('meuApp_Imagem', imagemBase64Global);
+              imagemFundoGlobal = resposta.config.imagem;
+              document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
+              localStorage.setItem('meuApp_Imagem', imagemFundoGlobal);
             }
           }
 
+          // Monta os apps recebidos na área central
           const container = document.getElementById('area-botoes');
           container.innerHTML = ''; 
           resposta.apps.forEach(app => {
@@ -334,12 +365,13 @@
         .catch(err => {
           clearInterval(loopProgresso);
           document.getElementById('progress-text').innerText = 'Modo Offline: Verifique a conexão.';
-          // Fecha o progresso após erro para permitir uso do site (se tiver cache)
           setTimeout(() => finalizarProgresso(), 2000); 
         });
     }
 
-    // === SALVAR / EDITAR APPS (POST) ===
+    /**
+     * Grava dados ou envia requisição de edição para a nuvem
+     */
     function salvarApp() {
       const id = document.getElementById('inputId').value;
       const dados = {
@@ -360,39 +392,44 @@
       });
     }
 
-    // === SALVAR PERFIL (POST) ===
-    document.getElementById('inputImagem').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imagemBase64Global = e.target.result;
-          document.body.style.backgroundImage = `url('${imagemBase64Global}')`;
-          // Salva na memória local assim que o usuário escolhe a foto
-          localStorage.setItem('meuApp_Imagem', imagemBase64Global);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    /**
+     * Preenche o modal de edição e o abre
+     */
+    function prepararEdicao(id, nome, url, emoji) {
+      document.getElementById('tituloModalApp').innerText = "Editar App";
+      document.getElementById('inputId').value = id;
+      document.getElementById('inputNome').value = nome;
+      document.getElementById('inputUrl').value = url;
+      document.getElementById('inputEmoji').value = emoji;
+      abrirModal('modalApp');
+    }
 
+    /**
+     * Grava as configurações de aparência no Banco de dados e localmente
+     */
     function salvarPerfil() {
       fecharModal('modalPerfil');
-      iniciarProgresso('Sincronizando aparência com o servidor...');
+      iniciarProgresso('Sincronizando aparência...');
 
+      // Puxa informações diretas do novo campo select
       const tema = document.getElementById('selectTema').value;
-      aplicarTema(tema); // Garante o salvamento local na hora de salvar
+      imagemFundoGlobal = document.getElementById('selectFundo').value;
+
+      aplicarTema(tema); 
+      document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
+      localStorage.setItem('meuApp_Imagem', imagemFundoGlobal);
       
       const dados = {
         action: "salvar_perfil",
         tema: tema,
-        imagemBase64: imagemBase64Global
+        imagemBase64: imagemFundoGlobal // Mantive o nome da variável enviada para o Apps Script para evitar ter que alterar o backend
       };
 
       fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) })
       .then(() => finalizarProgresso());
     }
 
-    // Chama o carregamento inicial
+    // Aciona a consulta de dados inicial assim que possível
     carregarDados();
   </script>
 </body>
