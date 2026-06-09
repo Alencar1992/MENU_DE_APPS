@@ -22,43 +22,28 @@
       border-right: 1px solid #ccc; 
       display: flex;
       flex-direction: column;
-      transition: width 0.3s ease; /* Faz o efeito de deslizar ao recolher */
+      transition: width 0.3s ease;
       position: relative;
       box-shadow: 2px 0 5px rgba(0,0,0,0.05);
     }
 
-    /* Classe que será aplicada para recolher o menu */
     #sidebar.collapsed { width: 70px; }
-
-    /* Esconde o texto quando o menu estiver recolhido */
     #sidebar.collapsed .menu-text, 
     #sidebar.collapsed h3 { display: none; }
 
-    /* Estilo dos itens do menu lateral */
     .menu-item { 
-      display: flex; 
-      align-items: center; 
-      padding: 15px 22px; 
-      color: var(--text-color); 
-      text-decoration: none; 
-      transition: background 0.2s;
-      white-space: nowrap; /* Impede que o texto quebre linha ao encolher */
+      display: flex; align-items: center; padding: 15px 22px; 
+      color: var(--text-color); text-decoration: none; 
+      transition: background 0.2s; white-space: nowrap; cursor: pointer;
     }
     .menu-item:hover { background-color: #f0f0f0; }
     .menu-icon { font-size: 20px; margin-right: 15px; min-width: 25px; text-align: center; }
 
-    /* Botão de Abrir/Fechar Menu */
     #toggle-btn {
-      background: var(--primary-blue);
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      font-size: 20px;
-      text-align: center;
+      background: var(--primary-blue); color: white; border: none;
+      padding: 10px; cursor: pointer; font-size: 20px; text-align: center;
     }
 
-    /* Área Principal */
     #main-content { flex: 1; padding: 30px; overflow-y: auto; transition: margin 0.3s; }
     #area-botoes { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
 
@@ -75,6 +60,21 @@
 
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-blue); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ESTILOS DO MODAL (NOVO) */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+    }
+    .modal-box {
+      background: white; padding: 30px; border-radius: 10px; width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 15px;
+    }
+    .modal-box h2 { margin: 0 0 10px 0; font-size: 20px; text-align: center; }
+    .modal-box input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+    .btn-salvar { background: var(--primary-blue); color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .btn-salvar:hover { background: #357ae8; }
+    .btn-fechar { background: #ccc; color: #333; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -83,17 +83,14 @@
     <button id="toggle-btn" onclick="toggleMenu()" title="Recolher Menu">☰</button>
     <h3 style="padding: 15px;">Configurações</h3>
     
+    <a class="menu-item" onclick="abrirModal()">
+      <span class="menu-icon">➕</span>
+      <span class="menu-text">Adicionar App</span>
+    </a>
+    
     <a href="javascript:void(0)" class="menu-item" onclick="alert('Configuração de Perfil em breve!')">
       <span class="menu-icon">👤</span>
       <span class="menu-text">Meu Perfil</span>
-    </a>
-    <a href="javascript:void(0)" class="menu-item" onclick="alert('Configuração de Aparência em breve!')">
-      <span class="menu-icon">🎨</span>
-      <span class="menu-text">Aparência</span>
-    </a>
-    <a href="javascript:void(0)" class="menu-item" onclick="alert('Gerenciamento de Permissões em breve!')">
-      <span class="menu-icon">🔒</span>
-      <span class="menu-text">Permissões</span>
     </a>
   </nav>
 
@@ -109,49 +106,103 @@
     </div>
   </main>
 
+  <div id="modalApp" class="modal-overlay">
+    <div class="modal-box">
+      <h2>Novo Aplicativo</h2>
+      <input type="text" id="inputNome" placeholder="Nome do App (Ex: Calculadora)">
+      <input type="url" id="inputUrl" placeholder="Link (Ex: https://...)">
+      <input type="text" id="inputEmoji" placeholder="Emoji (Ex: 🧮)">
+      <button class="btn-salvar" onclick="salvarApp()">Salvar na Base</button>
+      <button class="btn-fechar" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+
   <script>
     /**
-     * Função para recolher/expandir o menu lateral
+     * URL do seu Web App (Google Apps Script)
+     * IMPORTANTE: Cole a NOVA URL gerada após adicionar a função doPost!
      */
-    function toggleMenu() {
-      document.getElementById('sidebar').classList.toggle('collapsed');
+    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzpYzG0rHm_Sz2CHAC76ySn2Y7pNPSOJ7Z0ETogoQortLQEiUeloP6inwcqncTgoztf/exec';
+
+    // === FUNÇÕES DE TELA (MENU E MODAL) ===
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+    function abrirModal() { document.getElementById('modalApp').style.display = 'flex'; }
+    function fecharModal() { 
+      document.getElementById('modalApp').style.display = 'none'; 
+      // Limpa os campos ao fechar
+      document.getElementById('inputNome').value = '';
+      document.getElementById('inputUrl').value = '';
+      document.getElementById('inputEmoji').value = '';
     }
 
-    /**
-     * URL do seu Web App (Google Apps Script)
-     * IMPORTANTE: Você PRECISA substituir o link abaixo pelo seu URL de execução!
-     */
-    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzLy8lSkmrt6H0FwWJ3jXYiDuKSXj2kcIL2cRfuQOpc18A3S_E2GQ5q1gqP6kBC5r1Q/exec';
+    // === FUNÇÃO PARA CARREGAR OS APPS (GET) ===
+    function carregarApps() {
+      const container = document.getElementById('area-botoes');
+      container.innerHTML = '<div class="loader"></div><p>Carregando...</p>'; // Mostra carregamento
 
-    // Busca os dados na planilha assim que a página carrega
-    fetch(URL_SCRIPT)
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('area-botoes');
-        container.innerHTML = ''; // Limpa o loader
+      fetch(URL_SCRIPT)
+        .then(res => res.json())
+        .then(data => {
+          container.innerHTML = ''; 
+          if(data.length === 0) {
+            container.innerHTML = '<p>Nenhum link encontrado na planilha.</p>';
+            return;
+          }
+          data.forEach(app => {
+            const card = document.createElement('a');
+            card.href = app.url;
+            card.target = "_blank";
+            card.className = 'app-card';
+            card.innerHTML = `
+              <div class="app-emoji">${app.emoji}</div>
+              <div class="app-name">${app.nome}</div>
+            `;
+            container.appendChild(card);
+          });
+        })
+        .catch(err => console.error(err));
+    }
 
-        if(data.length === 0) {
-          container.innerHTML = '<p>Nenhum link encontrado na planilha.</p>';
-          return;
-        }
+    // === FUNÇÃO PARA SALVAR NOVO APP (POST) ===
+    function salvarApp() {
+      const nome = document.getElementById('inputNome').value;
+      const url = document.getElementById('inputUrl').value;
+      const emoji = document.getElementById('inputEmoji').value;
 
-        data.forEach(app => {
-          const card = document.createElement('a');
-          card.href = app.url;
-          card.target = "_blank";
-          card.className = 'app-card';
-          card.innerHTML = `
-            <div class="app-emoji">${app.emoji}</div>
-            <div class="app-name">${app.nome}</div>
-          `;
-          container.appendChild(card);
-        });
+      // Validação simples
+      if(!nome || !url || !emoji) {
+        alert("Por favor, preencha todos os campos!");
+        return;
+      }
+
+      // Muda o texto do botão para indicar processamento
+      document.querySelector('.btn-salvar').innerText = 'Salvando...';
+
+      // Cria o pacote de dados
+      const dados = { nome: nome, url: url, emoji: emoji };
+
+      // Envia via POST (Usamos mode: 'no-cors' para evitar bloqueios de segurança do navegador)
+      fetch(URL_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      })
+      .then(() => {
+        alert('App adicionado com sucesso!');
+        fecharModal();
+        document.querySelector('.btn-salvar').innerText = 'Salvar na Base'; // Volta o botão ao normal
+        carregarApps(); // Recarrega a tela para mostrar o botão novo
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('area-botoes').innerHTML = 
-          '<p style="color:red">Erro ao carregar links. Verifique se o Web App foi publicado como "Qualquer pessoa".</p>';
+        alert("Ocorreu um erro ao salvar.");
+        document.querySelector('.btn-salvar').innerText = 'Salvar na Base';
       });
+    }
+
+    // Inicia carregando os apps assim que a página abre
+    carregarApps();
   </script>
 </body>
 </html>
