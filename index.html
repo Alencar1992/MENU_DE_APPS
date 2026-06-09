@@ -2,81 +2,155 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel Central de Aplicativos</title>
   <style>
-    /* Reset básico para remover margens e ocupar a tela toda */
-    body { margin: 0; display: flex; font-family: sans-serif; background-color: #f0f2f5; height: 100vh; }
-    
-    /* Configuração visual da barra lateral esquerda */
-    #sidebar { width: 250px; background: #ffffff; border-right: 1px solid #ccc; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-    .menu-item { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; margin-bottom: 5px;}
-    .menu-item:hover { background-color: #f4f4f4; border-radius: 4px; }
-    
-    /* Área direita onde ficam os botões dos apps */
-    #conteudo-principal { flex: 1; padding: 40px; overflow-y: auto; }
-    #area-botoes { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
-    
-    /* Desenho dos "Cards" (Botões dos Aplicativos) */
-    .app-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 160px; height: 140px; background-color: #ffffff;
-      border-radius: 12px; text-decoration: none; color: #333;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;
+    /* Variáveis de cores para facilitar manutenção */
+    :root {
+      --bg-color: #f0f2f5;
+      --sidebar-color: #ffffff;
+      --primary-blue: #4285f4;
+      --text-color: #333;
     }
-    .app-btn:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-    .app-emoji { font-size: 48px; margin-bottom: 10px; }
-    .app-nome { font-weight: bold; text-align: center; font-size: 14px; padding: 0 10px; }
+
+    body { margin: 0; display: flex; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); height: 100vh; overflow: hidden; }
+
+    /* Estilo do Menu Lateral com transição suave */
+    #sidebar { 
+      width: 250px; 
+      background: var(--sidebar-color); 
+      border-right: 1px solid #ccc; 
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease; /* Faz o efeito de deslizar ao recolher */
+      position: relative;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+
+    /* Classe que será aplicada para recolher o menu */
+    #sidebar.collapsed { width: 70px; }
+
+    /* Esconde o texto quando o menu estiver recolhido */
+    #sidebar.collapsed .menu-text, 
+    #sidebar.collapsed h3 { display: none; }
+
+    /* Estilo dos itens do menu lateral */
+    .menu-item { 
+      display: flex; 
+      align-items: center; 
+      padding: 15px 22px; 
+      color: var(--text-color); 
+      text-decoration: none; 
+      transition: background 0.2s;
+      white-space: nowrap; /* Impede que o texto quebre linha ao encolher */
+    }
+    .menu-item:hover { background-color: #f0f0f0; }
+    .menu-icon { font-size: 20px; margin-right: 15px; min-width: 25px; text-align: center; }
+
+    /* Botão de Abrir/Fechar Menu */
+    #toggle-btn {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    /* Área Principal */
+    #main-content { flex: 1; padding: 30px; overflow-y: auto; transition: margin 0.3s; }
+    #area-botoes { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+
+    /* Cards dos Apps */
+    .app-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 150px; height: 130px; background: white; border-radius: 15px;
+      text-decoration: none; color: var(--text-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .app-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+    .app-emoji { font-size: 40px; margin-bottom: 10px; }
+    .app-name { font-weight: 600; font-size: 13px; text-align: center; }
+
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-blue); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-  <div id="sidebar">
-    <h3>⚙️ Configurações</h3>
-    <a href="#" class="menu-item">👤 Meu Perfil</a>
-    <a href="#" class="menu-item">🎨 Aparência</a>
-    <a href="#" class="menu-item">🔒 Permissões</a>
-  </div>
-
-  <div id="conteudo-principal">
-    <h1>Meus Aplicativos</h1>
-    <p>Selecione um aplicativo abaixo para acessar a ferramenta:</p>
+  <nav id="sidebar">
+    <button id="toggle-btn" onclick="toggleMenu()" title="Recolher Menu">☰</button>
+    <h3 style="padding: 15px;">Configurações</h3>
     
+    <a href="javascript:void(0)" class="menu-item" onclick="alert('Configuração de Perfil em breve!')">
+      <span class="menu-icon">👤</span>
+      <span class="menu-text">Meu Perfil</span>
+    </a>
+    <a href="javascript:void(0)" class="menu-item" onclick="alert('Configuração de Aparência em breve!')">
+      <span class="menu-icon">🎨</span>
+      <span class="menu-text">Aparência</span>
+    </a>
+    <a href="javascript:void(0)" class="menu-item" onclick="alert('Gerenciamento de Permissões em breve!')">
+      <span class="menu-icon">🔒</span>
+      <span class="menu-text">Permissões</span>
+    </a>
+  </nav>
+
+  <main id="main-content">
+    <h1>Meus Aplicativos</h1>
+    <p>Selecione uma ferramenta para iniciar:</p>
+
     <div id="area-botoes">
-      <p id="carregando">Buscando aplicativos na base de dados...</p>
+      <div id="status">
+        <div class="loader"></div>
+        <p>Conectando ao banco de dados...</p>
+      </div>
     </div>
-  </div>
+  </main>
 
   <script>
-    // URL gerada pelo Google Apps Script
-    // Cole a sua URL correta aqui embaixo para conectar com a sua planilha!
+    /**
+     * Função para recolher/expandir o menu lateral
+     */
+    function toggleMenu() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+
+    /**
+     * URL do seu Web App (Google Apps Script)
+     * IMPORTANTE: Você PRECISA substituir o link abaixo pelo seu URL de execução!
+     */
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzLy8lSkmrt6H0FwWJ3jXYiDuKSXj2kcIL2cRfuQOpc18A3S_E2GQ5q1gqP6kBC5r1Q/exec';
 
-    // Função que conecta na planilha para buscar os apps
+    // Busca os dados na planilha assim que a página carrega
     fetch(URL_SCRIPT)
-      .then(response => response.json()) // Transforma a resposta em um objeto JavaScript
+      .then(res => res.json())
       .then(data => {
-        const areaBotoes = document.getElementById('area-botoes');
-        areaBotoes.innerHTML = ''; // Remove o texto de "Buscando..."
-        
-        // Laço de repetição para criar um botão para cada linha da planilha
-        data.forEach(item => {
-          const botao = document.createElement('a');
-          botao.href = item.url;
-          botao.target = "_blank"; // Abre em nova guia
-          botao.className = "app-btn"; 
-          
-          // Preenche o botão com os dados lidos
-          botao.innerHTML = `
-            <div class="app-emoji">${item.emoji}</div>
-            <div class="app-nome">${item.nome}</div>
+        const container = document.getElementById('area-botoes');
+        container.innerHTML = ''; // Limpa o loader
+
+        if(data.length === 0) {
+          container.innerHTML = '<p>Nenhum link encontrado na planilha.</p>';
+          return;
+        }
+
+        data.forEach(app => {
+          const card = document.createElement('a');
+          card.href = app.url;
+          card.target = "_blank";
+          card.className = 'app-card';
+          card.innerHTML = `
+            <div class="app-emoji">${app.emoji}</div>
+            <div class="app-name">${app.nome}</div>
           `;
-          
-          areaBotoes.appendChild(botao); // Adiciona na tela
+          container.appendChild(card);
         });
       })
-      .catch(error => {
-        console.error('Erro ao carregar os apps:', error);
-        document.getElementById('area-botoes').innerHTML = '<p style="color: red;">Erro ao carregar os botões.</p>';
+      .catch(err => {
+        console.error(err);
+        document.getElementById('area-botoes').innerHTML = 
+          '<p style="color:red">Erro ao carregar links. Verifique se o Web App foi publicado como "Qualquer pessoa".</p>';
       });
   </script>
 </body>
