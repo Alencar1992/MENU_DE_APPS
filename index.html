@@ -2,784 +2,2103 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Meus Aplicativos</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Alencar Apps — seus aplicativos em um só lugar.">
+  <meta name="theme-color" content="#07101e">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#4285f4">
-  
-  <link rel="apple-touch-icon" href="iconA.png">
-  <link rel="icon" sizes="192x192" href="iconA.png">
-
+  <title>Alencar Apps</title>
+  <link rel="apple-touch-icon" href="alencar-apps-mark.png">
+  <link rel="icon" type="image/png" href="alencar-apps-mark.png">
   <style>
-    /* Variáveis Nativas e Escalas de Sombra 3D */
     :root {
-      --bg-color: #e0e5ec;
-      --sidebar-color: rgba(255, 255, 255, 0.7);
-      --primary-blue: #4285f4;
-      --text-color: #333;
-      --card-bg: linear-gradient(145deg, #ffffff, #e6e6e6);
-      --shadow-3d: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
-      --inset-3d: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
-      --modal-bg: rgba(255, 255, 255, 0.85);
+      color-scheme: dark;
+      --bg: #06101c;
+      --bg-elevated: rgba(10, 23, 39, .82);
+      --surface: rgba(13, 28, 47, .72);
+      --surface-strong: rgba(17, 35, 57, .94);
+      --surface-hover: rgba(21, 44, 72, .88);
+      --line: rgba(173, 203, 235, .17);
+      --line-strong: rgba(84, 171, 255, .56);
+      --text: #f5f8fc;
+      --muted: #a7b4c7;
+      --muted-strong: #c8d2df;
+      --accent: #3297ff;
+      --accent-strong: #1577e6;
+      --accent-soft: rgba(50, 151, 255, .15);
+      --favorite: #ffbd2e;
+      --danger: #ff6c78;
+      --success: #47d79b;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .32);
+      --radius-xl: 24px;
+      --radius-lg: 19px;
+      --radius-md: 14px;
+      --background-image: url("spider_man.webp");
+      --header-height: 106px;
+      --sidebar-width: 278px;
     }
 
-    body.dark-mode {
-      --bg-color: #1a1a1a;
-      --sidebar-color: rgba(30, 30, 30, 0.8);
-      --primary-blue: #bb86fc;
-      --text-color: #e0e0e0;
-      --card-bg: linear-gradient(145deg, #2c2c2c, #1f1f1f);
-      --shadow-3d: 8px 8px 16px #0b0b0b, -8px -8px 16px #292929;
-      --inset-3d: inset 8px 8px 16px #0b0b0b, inset -8px -8px 16px #292929;
-      --modal-bg: rgba(30, 30, 30, 0.85);
+    body[data-theme="claro"] {
+      color-scheme: light;
+      --bg: #edf4fb;
+      --bg-elevated: rgba(245, 250, 255, .88);
+      --surface: rgba(255, 255, 255, .76);
+      --surface-strong: rgba(255, 255, 255, .96);
+      --surface-hover: rgba(244, 250, 255, .96);
+      --line: rgba(26, 74, 118, .14);
+      --line-strong: rgba(21, 119, 230, .42);
+      --text: #0c1b2d;
+      --muted: #5f7186;
+      --muted-strong: #354b62;
+      --accent-soft: rgba(21, 119, 230, .1);
+      --shadow: 0 24px 70px rgba(23, 57, 90, .18);
     }
 
-    body { 
-      margin: 0; display: flex; font-family: 'Segoe UI', Tahoma, sans-serif; 
-      background-color: var(--bg-color); color: var(--text-color); 
-      min-height: 100vh; min-height: 100dvh; overflow: hidden; transition: background-color 0.3s;
-      background-size: cover; background-position: center;
-      background-attachment: fixed;
+    * { box-sizing: border-box; }
+
+    html { min-width: 320px; background: var(--bg); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      color: var(--text);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      transition: background-color .25s ease, color .25s ease;
     }
 
-    /* Botão Flutuante do Menu */
-    #toggle-btn { 
-      position: fixed; top: 15px; left: 15px; z-index: 1001;
-      background: var(--modal-bg); color: var(--text-color); border: none; 
-      padding: 10px 15px; border-radius: 12px; cursor: pointer; font-size: 20px; 
-      box-shadow: var(--shadow-3d); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(90deg, rgba(3, 10, 18, .98) 0%, rgba(3, 10, 18, .88) 34%, rgba(3, 10, 18, .48) 100%),
+        linear-gradient(180deg, rgba(4, 12, 22, .64), rgba(4, 12, 22, .94)),
+        var(--background-image);
+      background-position: center;
+      background-size: cover;
+      filter: saturate(.68);
     }
 
-    /* Menu Lateral (Sidebar) */
-    #sidebar { 
-      width: 250px; background: var(--sidebar-color);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-right: 1px solid rgba(255,255,255,0.2); 
-      display: flex; flex-direction: column; transition: transform 0.3s ease, width 0.3s ease; 
-      z-index: 900; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      padding-top: 70px;
+    body[data-theme="claro"]::before {
+      opacity: .18;
+      filter: saturate(.55) contrast(.9);
     }
-    
-    #sidebar.collapsed { width: 70px; }
-    #sidebar.collapsed .menu-text, #sidebar.collapsed h3 { display: none; }
-    
-    .menu-item { display: flex; align-items: center; width: 100%; padding: 15px; color: var(--text-color); background: transparent; border: 0; font: inherit; text-align: left; cursor: pointer; transition: 0.2s; }
-    .menu-item:hover { background-color: rgba(0,0,0,0.05); }
-    .menu-icon { font-size: 20px; margin-right: 15px; }
 
-    /* Área Central */
-    #main-content { 
-      flex: 1; padding: 20px; overflow-y: auto; display: flex; 
-      flex-direction: column; position: relative; padding-top: 70px; 
-    }
-    #area-botoes { display: flex; gap: 25px; flex-wrap: wrap; margin-top: 20px; flex: 1; justify-content: center; align-content: flex-start; }
+    button, input, select, textarea { font: inherit; }
 
-    /* Cards dos Apps com efeito 3D */
-    .app-card {
-      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 140px; height: 140px; background: var(--card-bg); border-radius: 20px;
-      text-decoration: none; color: var(--text-color); 
-      box-shadow: var(--shadow-3d); transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .app-card:active { box-shadow: var(--inset-3d); transform: scale(0.95); }
-    
-    .app-emoji { font-size: 45px; margin-bottom: 10px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
-    .app-name { font-weight: 700; font-size: 13px; text-align: center; }
-    
-    /* Botões de Ação no Card */
-    .card-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 8px; }
-    .card-btn { 
-      background: var(--bg-color); border: none; border-radius: 50%; cursor: pointer; 
-      padding: 6px; font-size: 12px; box-shadow: var(--shadow-3d); transition: 0.2s; 
-    }
-    .card-btn:active { box-shadow: var(--inset-3d); }
-    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
-      outline: 3px solid var(--primary-blue);
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    button { color: inherit; }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid rgba(50, 151, 255, .75);
       outline-offset: 3px;
     }
 
-    /* Modais */
-    .modal-overlay { 
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-      justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s;
-    }
-    .modal-overlay.show { opacity: 1; }
-    
-    .modal-box { 
-      background: var(--modal-bg); padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; 
-      display: flex; flex-direction: column; gap: 15px; color: var(--text-color);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.2);
-      transform: translateY(20px); transition: transform 0.3s;
-    }
-    .modal-overlay.show .modal-box { transform: translateY(0); }
-    
-    .modal-box input, .modal-box select { 
-      padding: 12px; background: var(--bg-color); border: none; border-radius: 10px; 
-      width: calc(100% - 24px); box-shadow: var(--inset-3d); color: var(--text-color); outline: none;
-    }
-    .modal-box label { font-size: 12px; font-weight: bold; margin-bottom: -10px; }
-    .modal-box form { display: flex; flex-direction: column; gap: 15px; }
-    
-    .btn-salvar { background: var(--primary-blue); color: white; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); }
-    .btn-fechar { background: transparent; color: var(--text-color); padding: 12px; border: 1px solid var(--text-color); border-radius: 10px; cursor: pointer; }
-
-    /* Tela de Carregamento */
-    #progress-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 9999;
-      flex-direction: column; justify-content: center; align-items: center; color: white;
-    }
-    .progress-container { width: 80%; max-width: 300px; background: #333; border-radius: 20px; height: 15px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); margin-top: 15px;}
-    #progress-bar { height: 100%; width: 35%; background: linear-gradient(90deg, #4285f4, #00d2ff); animation: progresso-indeterminado 1.1s ease-in-out infinite; }
-    #progress-text { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-    @keyframes progresso-indeterminado {
-      from { transform: translateX(-120%); }
-      to { transform: translateX(320%); }
-    }
-
-    #status-area {
-      display: none; margin: 30px auto; max-width: 520px; padding: 20px;
-      border-radius: 16px; background: var(--modal-bg); text-align: center;
-      box-shadow: var(--shadow-3d);
-    }
-    #status-area.show { display: block; }
-    #toast {
-      position: fixed; right: 20px; bottom: 20px; z-index: 10000;
-      max-width: min(360px, calc(100vw - 40px)); padding: 14px 18px;
-      border-radius: 12px; color: #fff; background: #207a45;
-      box-shadow: 0 12px 30px rgba(0,0,0,.35); opacity: 0;
-      transform: translateY(15px); pointer-events: none; transition: .2s;
-    }
-    #toast.show { opacity: 1; transform: translateY(0); }
-    #toast.error { background: #a52b2b; }
     [hidden] { display: none !important; }
-    .auth-note { margin: 0; font-size: 12px; line-height: 1.45; opacity: .8; }
-    .auth-actions { display: flex; flex-direction: column; gap: 10px; }
 
-    /* Rodapé */
-    footer { text-align: center; padding: 15px; margin-top: auto; font-size: 11px; font-weight: bold; opacity: 0.7; }
-    .store-badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
-    .store-badges img { height: 25px; filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.2)); }
+    .app-shell {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template:
+        "header header" var(--header-height)
+        "sidebar content" minmax(0, 1fr) /
+        var(--sidebar-width) minmax(0, 1fr);
+    }
 
-    @media (max-width: 768px) {
-      #sidebar { position: fixed; height: 100vh; height: 100dvh; transform: translateX(-100%); width: 250px; left: 0; top: 0; padding-top: 70px; }
-      #sidebar.mobile-open { transform: translateX(0); } 
-      #toggle-btn { position: fixed; top: 10px; left: 10px; z-index: 1001; }
+    .topbar {
+      grid-area: header;
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(260px, 630px) 1fr;
+      align-items: center;
+      gap: 28px;
+      padding: 15px 32px 15px 24px;
+      background: rgba(4, 13, 23, .76);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(24px) saturate(1.25);
+      -webkit-backdrop-filter: blur(24px) saturate(1.25);
+    }
+
+    body[data-theme="claro"] .topbar { background: rgba(239, 247, 254, .82); }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 13px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 10px 20px rgba(38, 136, 255, .24));
+    }
+
+    .brand-copy { min-width: 0; }
+
+    .brand-title {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 760;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search svg {
+      position: absolute;
+      left: 19px;
+      width: 21px;
+      height: 21px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search input {
+      width: 100%;
+      height: 58px;
+      padding: 0 54px 0 52px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--text);
+      background: rgba(13, 28, 47, .62);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035);
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+
+    body[data-theme="claro"] .search input { background: rgba(255, 255, 255, .72); }
+
+    .search input::placeholder { color: var(--muted); }
+
+    .search input:focus {
+      border-color: var(--line-strong);
+      background: var(--surface-strong);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .search-clear:hover { color: var(--text); background: var(--accent-soft); }
+
+    .topbar-actions {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-button,
+    .primary-button,
+    .secondary-button,
+    .danger-button,
+    .icon-button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .admin-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 17px;
+      background: var(--surface);
+      color: var(--muted-strong);
+      font-weight: 650;
+    }
+
+    .admin-button svg { width: 19px; height: 19px; color: var(--accent); }
+    .admin-button:hover { border-color: var(--line-strong); color: var(--text); background: var(--surface-hover); }
+    .admin-button.is-admin { border-color: rgba(71, 215, 155, .44); }
+    .admin-button.is-admin svg { color: var(--success); }
+
+    .sidebar {
+      grid-area: sidebar;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      height: calc(100dvh - var(--header-height));
+      padding: 25px 18px;
+      border-right: 1px solid var(--line);
+      background: rgba(5, 16, 29, .48);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow-y: auto;
+    }
+
+    body[data-theme="claro"] .sidebar { background: rgba(238, 247, 254, .62); }
+
+    .nav-group + .nav-group {
+      margin-top: 25px;
+      padding-top: 23px;
+      border-top: 1px solid var(--line);
+    }
+
+    .nav-label {
+      margin: 0 12px 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .nav-button {
+      width: 100%;
+      min-height: 49px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: var(--muted-strong);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: .18s ease;
+    }
+
+    .nav-button + .nav-button { margin-top: 5px; }
+    .nav-button svg { width: 20px; height: 20px; flex: 0 0 auto; color: var(--muted); }
+    .nav-button:hover { background: rgba(255, 255, 255, .04); color: var(--text); }
+    .nav-button.active {
+      color: var(--text);
+      border-color: rgba(50, 151, 255, .4);
+      background: linear-gradient(90deg, rgba(50, 151, 255, .2), rgba(50, 151, 255, .08));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+    }
+    .nav-button.active svg { color: var(--accent); }
+    .nav-count { margin-left: auto; color: var(--muted); font-size: 12px; }
+
+    .admin-note {
+      margin-top: 28px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      color: var(--muted);
+      background: rgba(12, 28, 47, .55);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .admin-note strong { display: block; margin-bottom: 4px; color: var(--muted-strong); font-size: 13px; }
+
+    .content {
+      grid-area: content;
+      min-width: 0;
+      padding: 34px clamp(24px, 3.2vw, 52px) 70px;
+      overflow: hidden;
+    }
+
+    .content-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 27px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: clamp(29px, 3vw, 40px);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
+
+    .page-description {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .result-summary {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mobile-filters {
+      display: none;
+      margin: 0 -18px 22px;
+      padding: 0 18px;
+      gap: 9px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .mobile-filters::-webkit-scrollbar { display: none; }
+
+    .filter-chip {
+      flex: 0 0 auto;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted-strong);
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    .filter-chip.active { color: var(--text); border-color: var(--line-strong); background: var(--accent-soft); }
+    .filter-chip svg { width: 17px; height: 17px; }
+
+    .admin-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: -3px 0 24px;
+      padding: 13px;
+      border: 1px solid rgba(71, 215, 155, .23);
+      border-radius: var(--radius-lg);
+      background: rgba(7, 30, 34, .58);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+    }
+
+    .toolbar-copy {
+      margin-right: auto;
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .toolbar-copy strong { color: var(--text); }
+
+    .primary-button,
+    .secondary-button,
+    .danger-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 680;
+    }
+    .primary-button {
+      border-color: rgba(73, 167, 255, .65);
+      color: #fff;
+      background: linear-gradient(180deg, #268cf3, #126bc9);
+      box-shadow: 0 8px 24px rgba(18, 107, 201, .24);
+    }
+    .primary-button:hover { transform: translateY(-1px); background: linear-gradient(180deg, #3a9dff, #1675da); }
+    .secondary-button { background: var(--surface); color: var(--muted-strong); }
+    .secondary-button:hover { border-color: var(--line-strong); color: var(--text); background: var(--surface-hover); }
+    .danger-button { color: #fff; border-color: rgba(255, 108, 120, .48); background: rgba(193, 52, 66, .82); }
+    .danger-button:hover { background: rgba(218, 59, 75, .94); }
+    .primary-button svg, .secondary-button svg, .danger-button svg { width: 17px; height: 17px; }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 255px), 1fr));
+      gap: 19px;
+      align-items: stretch;
+    }
+
+    .app-card {
+      position: relative;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .055), transparent 44%),
+        var(--surface);
+      box-shadow: 0 15px 38px rgba(0, 0, 0, .15), inset 0 1px 0 rgba(255, 255, 255, .04);
+      backdrop-filter: blur(17px);
+      -webkit-backdrop-filter: blur(17px);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      overflow: hidden;
+    }
+
+    .app-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      opacity: 0;
+      background: linear-gradient(135deg, rgba(50, 151, 255, .12), transparent 42%);
+      transition: opacity .2s;
+    }
+
+    .app-card:hover,
+    .app-card:focus-within {
+      transform: translateY(-4px);
+      border-color: var(--line-strong);
+      background-color: var(--surface-hover);
+      box-shadow: 0 22px 52px rgba(0, 0, 0, .28), 0 0 0 1px rgba(50, 151, 255, .1);
+    }
+    .app-card:hover::after,
+    .app-card:focus-within::after { opacity: 1; }
+    .app-card.is-archived { opacity: .63; filter: saturate(.65); }
+    .app-card.is-dragging { opacity: .45; transform: scale(.97); }
+    .app-card.is-drag-over { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+    .card-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .app-icon {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 25% 18%, rgba(255, 255, 255, .18), transparent 36%),
+        linear-gradient(145deg, rgba(50, 151, 255, .34), rgba(17, 49, 88, .72));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 12px 28px rgba(0, 0, 0, .18);
+      font-size: 36px;
+      line-height: 1;
+      overflow: hidden;
+    }
+
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-controls {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 5px;
+    }
+
+    .icon-button {
+      width: 42px;
+      min-height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: var(--muted);
+      background: rgba(5, 16, 29, .45);
+    }
+    body[data-theme="claro"] .icon-button { background: rgba(255, 255, 255, .6); }
+    .icon-button:hover { color: var(--text); border-color: var(--line-strong); background: var(--surface-hover); }
+    .icon-button svg { width: 19px; height: 19px; }
+    .icon-button.is-favorite { color: var(--favorite); border-color: rgba(255, 189, 46, .3); }
+    .icon-button.is-favorite svg { fill: currentColor; }
+
+    .card-body {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      padding-top: 22px;
+    }
+
+    .app-name {
+      margin: 0;
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.28;
+      letter-spacing: -.018em;
+    }
+
+    .app-description {
+      min-height: 45px;
+      margin: 9px 0 13px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .category-tag,
+    .archived-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 29px;
+      padding: 0 10px;
+      border: 1px solid rgba(50, 151, 255, .17);
+      border-radius: 9px;
+      color: #73b8ff;
+      background: rgba(50, 151, 255, .08);
+      font-size: 12px;
+      font-weight: 640;
+    }
+
+    .archived-tag { margin-left: 6px; color: var(--danger); border-color: rgba(255, 108, 120, .2); background: rgba(255, 108, 120, .08); }
+
+    .card-footer {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 45px;
+      gap: 8px;
+      margin-top: 21px;
+    }
+
+    .open-button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(50, 151, 255, .5);
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(180deg, rgba(25, 123, 220, .88), rgba(15, 89, 164, .88));
+      text-decoration: none;
+      font-weight: 690;
+      transition: .18s ease;
+    }
+    .open-button:hover { background: linear-gradient(180deg, #248de9, #1269bc); transform: translateY(-1px); }
+    .open-button svg { width: 18px; height: 18px; }
+
+    .card-menu {
+      position: absolute;
+      top: 68px;
+      right: 20px;
+      z-index: 10;
+      width: 190px;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface-strong);
+      box-shadow: var(--shadow);
+    }
+
+    .card-menu button {
+      width: 100%;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 9px;
+      color: var(--muted-strong);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13px;
+    }
+    .card-menu button:hover { color: var(--text); background: var(--accent-soft); }
+    .card-menu button.danger { color: var(--danger); }
+    .card-menu svg { width: 16px; height: 16px; }
+
+    .drag-hint {
+      margin: 20px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .empty-state {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      padding: 40px 20px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(8, 21, 36, .38);
+      text-align: center;
+    }
+    .empty-state svg { width: 42px; height: 42px; margin-bottom: 13px; color: var(--accent); }
+    .empty-state h2 { margin: 0 0 6px; font-size: 20px; }
+    .empty-state p { max-width: 410px; margin: 0; color: var(--muted); font-size: 14px; }
+
+    .status-panel {
+      max-width: 540px;
+      margin: 60px auto;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--surface-strong);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .status-panel p { margin: 0 0 18px; color: var(--muted-strong); }
+
+    .bottom-nav { display: none; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(1, 7, 13, .74);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+
+    .modal {
+      width: min(100%, 510px);
+      max-height: min(88vh, 760px);
+      overflow-y: auto;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .055), transparent 32%),
+        var(--surface-strong);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+      transform: translateY(16px) scale(.985);
+      transition: transform .2s ease;
+    }
+    .modal-overlay.show .modal { transform: translateY(0) scale(1); }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+    .modal-title { margin: 0; font-size: 23px; letter-spacing: -.025em; }
+    .modal-description { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: var(--text); background: var(--accent-soft); }
+    .modal-close svg { width: 18px; height: 18px; }
+
+    .form-grid { display: grid; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .field { display: grid; gap: 7px; }
+    .field label { color: var(--muted-strong); font-size: 13px; font-weight: 650; }
+    .field small { color: var(--muted); font-size: 11px; }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(4, 14, 25, .55);
+      outline: none;
+    }
+    body[data-theme="claro"] .field input,
+    body[data-theme="claro"] .field select,
+    body[data-theme="claro"] .field textarea { background: rgba(244, 249, 253, .85); }
+    .field textarea { min-height: 88px; resize: vertical; }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus { border-color: var(--line-strong); box-shadow: 0 0 0 4px var(--accent-soft); }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .auth-note {
+      margin: 0;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: rgba(50, 151, 255, .06);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .progress-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: none;
+      place-items: center;
+      background: rgba(2, 8, 15, .72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .progress-box { display: grid; justify-items: center; gap: 15px; color: #fff; font-weight: 650; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, .16);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 600;
+      max-width: min(390px, calc(100vw - 36px));
+      padding: 14px 17px;
+      border: 1px solid rgba(71, 215, 155, .3);
+      border-radius: 14px;
+      color: #effff8;
+      background: rgba(18, 107, 77, .94);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { border-color: rgba(255, 108, 120, .38); background: rgba(139, 38, 50, .96); }
+
+    @media (max-width: 1040px) {
+      :root { --sidebar-width: 236px; }
+      .topbar { grid-template-columns: var(--sidebar-width) minmax(240px, 1fr) auto; padding-right: 22px; gap: 18px; }
+      .brand-subtitle { display: none; }
+      .app-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 235px), 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      :root { --header-height: auto; }
+      body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+      body::before {
+        background-image:
+          linear-gradient(180deg, rgba(3, 10, 18, .86), rgba(3, 10, 18, .96)),
+          var(--background-image);
+        background-position: center top;
+      }
+      .app-shell { display: block; min-height: auto; }
+      .topbar {
+        position: sticky;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        padding: 12px 17px 14px;
+      }
+      .brand { gap: 9px; }
+      .brand-mark { width: 40px; height: 40px; }
+      .brand-title { font-size: 18px; }
+      .brand-subtitle { display: none; }
+      .search { grid-column: 1 / -1; }
+      .search input { height: 52px; }
+      .admin-button { width: 44px; min-height: 44px; padding: 0; justify-content: center; }
+      .admin-button span { display: none; }
+      .sidebar { display: none; }
+      .content { padding: 27px 17px 28px; }
+      .content-head { display: block; margin-bottom: 21px; }
+      .page-title { font-size: 29px; }
+      .page-description { margin-top: 6px; font-size: 14px; }
+      .result-summary { display: block; margin-top: 11px; }
+      .mobile-filters { display: flex; }
+      .admin-toolbar { align-items: stretch; }
+      .toolbar-copy { width: 100%; margin: 0; }
+      .admin-toolbar .primary-button,
+      .admin-toolbar .secondary-button { flex: 1; }
+      .app-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      .app-card {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 84px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        gap: 0 15px;
+        padding: 16px;
+        border-radius: 19px;
+      }
+      .app-card:hover,
+      .app-card:focus-within { transform: none; }
+      .card-top { position: static; grid-column: 1; grid-row: 1 / 3; display: block; }
+      .app-icon { width: 80px; height: 80px; border-radius: 19px; font-size: 34px; }
+      .card-controls { position: absolute; top: 12px; right: 12px; }
+      .icon-button { width: 40px; min-height: 40px; border-color: transparent; background: transparent; }
+      .card-body { grid-column: 2; grid-row: 1; padding: 3px 45px 0 0; }
+      .app-name { font-size: 16px; }
+      .app-description { min-height: 0; margin: 6px 0 9px; padding-right: 2px; font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .category-tag, .archived-tag { min-height: 25px; padding: 0 8px; font-size: 11px; }
+      .card-footer { grid-column: 2; grid-row: 2; grid-template-columns: minmax(120px, 1fr) 43px; margin-top: 13px; }
+      .open-button { min-height: 44px; }
+      .card-menu { top: 58px; right: 12px; }
+      .drag-hint { display: none; }
+      .bottom-nav {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        z-index: 100;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        min-height: 68px;
+        padding: 7px;
+        border: 1px solid var(--line);
+        border-radius: 23px;
+        background: rgba(9, 21, 36, .91);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, .42);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+      }
+      body[data-theme="claro"] .bottom-nav { background: rgba(247, 251, 255, .93); }
+      .bottom-nav button {
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 3px;
+        border: 0;
+        border-radius: 16px;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+        font-size: 10px;
+      }
+      .bottom-nav button.active { color: var(--accent); background: var(--accent-soft); }
+      .bottom-nav svg { width: 21px; height: 21px; }
+      .modal-overlay { align-items: flex-end; padding: 10px; }
+      .modal { width: 100%; max-height: 91vh; padding: 21px; border-radius: 24px 24px 18px 18px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column-reverse; }
+      .form-actions button { width: 100%; }
+      .toast { left: 18px; right: 18px; bottom: calc(96px + env(safe-area-inset-bottom)); }
+    }
+
+    @media (max-width: 420px) {
+      .app-card { grid-template-columns: 72px minmax(0, 1fr); gap: 0 12px; }
+      .app-icon { width: 70px; height: 70px; font-size: 30px; }
+      .card-body { padding-right: 41px; }
+      .card-footer { grid-column: 1 / -1; margin-top: 15px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
-<body>
+<body data-theme="escuro">
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Alencar Apps — início">
+        <img class="brand-mark" src="alencar-apps-mark.png" alt="">
+        <span class="brand-copy">
+          <span class="brand-title">Alencar Apps</span>
+          <span class="brand-subtitle">Seu ecossistema em um só lugar</span>
+        </span>
+      </a>
 
-  <button id="toggle-btn" type="button" title="Menu" aria-label="Abrir ou fechar menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+      <div class="search" role="search">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+        <input id="searchInput" type="search" aria-label="Buscar aplicativos" placeholder="Buscar aplicativos" autocomplete="off" maxlength="80">
+        <button id="searchClear" class="search-clear" type="button" aria-label="Limpar busca" hidden>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+        </button>
+      </div>
 
-  <nav id="sidebar">
-    <h3 style="padding: 0 15px 5px 15px; margin-top: 10px;">Ajustes</h3>
-    
-    <button id="btnNovoApp" type="button" class="menu-item admin-only" hidden>
-      <span class="menu-icon">➕</span><span class="menu-text">Novo App</span>
+      <div class="topbar-actions">
+        <button id="adminButton" class="admin-button" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.8 2.7 8.1 7 10 4.3-1.9 7-5.2 7-10V6l-7-3Z"></path><path d="M9.5 11.5 11 13l3.5-3.5"></path></svg>
+          <span id="adminButtonText">Admin</span>
+        </button>
+      </div>
+    </header>
+
+    <aside class="sidebar" aria-label="Navegação dos aplicativos">
+      <nav>
+        <div class="nav-group" id="primaryNav">
+          <button class="nav-button active" type="button" data-mode="todos">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg>
+            <span>Todos</span><span class="nav-count" id="allCount">0</span>
+          </button>
+          <button class="nav-button" type="button" data-mode="favoritos">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg>
+            <span>Favoritos</span><span class="nav-count" id="favoriteCount">0</span>
+          </button>
+          <button class="nav-button" type="button" data-mode="recentes">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            <span>Recentes</span><span class="nav-count" id="recentCount">0</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <p class="nav-label">Categorias</p>
+          <div id="categoryNav"></div>
+        </div>
+      </nav>
+
+      <div id="adminNote" class="admin-note" hidden>
+        <strong>Modo administrativo ativo</strong>
+        Arraste os cartões para reorganizar ou use o menu de cada app para editar e arquivar.
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="content-head" aria-labelledby="pageTitle">
+        <div>
+          <h1 id="pageTitle" class="page-title">Bem-vindo de volta!</h1>
+          <p id="pageDescription" class="page-description">Acesse seus aplicativos com rapidez e praticidade.</p>
+        </div>
+        <span id="resultSummary" class="result-summary" aria-live="polite"></span>
+      </section>
+
+      <div id="mobileFilters" class="mobile-filters" aria-label="Filtros rápidos"></div>
+
+      <section id="adminToolbar" class="admin-toolbar" aria-label="Ferramentas administrativas" hidden>
+        <span class="toolbar-copy"><strong>Administração:</strong> gerencie conteúdo, aparência e ordem.</span>
+        <button id="newAppButton" class="primary-button" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+          Novo app
+        </button>
+        <button id="appearanceButton" class="secondary-button" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h5.5A3.5 3.5 0 0 0 21 9.5 6.5 6.5 0 0 0 14.5 3H12Z"></path><circle cx="7.5" cy="10" r=".8" fill="currentColor" stroke="none"></circle><circle cx="9" cy="6.8" r=".8" fill="currentColor" stroke="none"></circle><circle cx="13" cy="6.2" r=".8" fill="currentColor" stroke="none"></circle></svg>
+          Aparência
+        </button>
+        <button id="archivedButton" class="secondary-button" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v13H4zM3 3h18v4H3zM9 11h6"></path></svg>
+          Ver arquivados
+        </button>
+      </section>
+
+      <section id="appGrid" class="app-grid" aria-label="Aplicativos"></section>
+
+      <section id="emptyState" class="empty-state" hidden>
+        <div>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2M8.5 11h5"></path></svg>
+          <h2 id="emptyTitle">Nenhum app encontrado</h2>
+          <p id="emptyDescription">Tente outro termo ou selecione uma categoria diferente.</p>
+        </div>
+      </section>
+
+      <section id="statusPanel" class="status-panel" role="status" hidden>
+        <p id="statusMessage"></p>
+        <button id="retryButton" class="primary-button" type="button">Tentar novamente</button>
+      </section>
+
+      <p id="dragHint" class="drag-hint" hidden>Arraste e solte os cartões para alterar a ordem de exibição.</p>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navegação móvel">
+    <button class="active" type="button" data-mode="todos">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg>
+      Início
     </button>
-    <button id="btnAparencia" type="button" class="menu-item admin-only" hidden>
-      <span class="menu-icon">🎨</span><span class="menu-text">Aparência</span>
+    <button type="button" data-mode="favoritos">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg>
+      Favoritos
     </button>
-    <button id="btnLogin" type="button" class="menu-item">
-      <span class="menu-icon">🔐</span><span id="textoLogin" class="menu-text">Entrar como administrador</span>
+    <button type="button" data-mode="recentes">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      Recentes
+    </button>
+    <button id="mobileCategoryButton" type="button">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M7 12h10M10 17h4"></path></svg>
+      Categorias
     </button>
   </nav>
 
-  <main id="main-content">
-    <h2 style="text-align: center; margin-top: 0;">Meus Aplicativos</h2>
-    <div id="area-botoes"></div>
-    <div id="status-area" role="status">
-      <p id="status-mensagem"></p>
-      <button id="btnTentarNovamente" type="button" class="btn-salvar">Tentar novamente</button>
-    </div>
-
-    <footer>
-      <div class="store-badges">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+  <div id="appModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="appModalTitle">
+    <div class="modal" tabindex="-1">
+      <div class="modal-head">
+        <div>
+          <h2 id="appModalTitle" class="modal-title">Novo app</h2>
+          <p class="modal-description">Preencha as informações exibidas na galeria.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="appModal" aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+        </button>
       </div>
-      <div>Since @2026 - Versão 1.5 - Build 09.06.26</div>
-    </footer>
-  </main>
-
-  <div id="modalApp" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tituloModalApp">
-    <div class="modal-box" tabindex="-1">
-      <h2 id="tituloModalApp" style="margin:0; text-align:center;">Configurar App</h2>
-      <form id="formApp">
-        <input type="hidden" id="inputId">
-        <label for="inputNome">Nome do aplicativo</label>
-        <input type="text" id="inputNome" placeholder="Nome do Aplicativo" maxlength="60" required>
-        <label for="inputUrl">Link HTTPS</label>
-        <input type="url" id="inputUrl" placeholder="https://..." inputmode="url" required>
-        <label for="inputEmoji">Emoji principal</label>
-        <input type="text" id="inputEmoji" placeholder="Ex.: 📊" maxlength="12" required>
-        <button id="btnSalvarApp" type="submit" class="btn-salvar">Gravar no Banco</button>
-        <button type="button" class="btn-fechar" data-close-modal="modalApp">Voltar</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="modalPerfil" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tituloModalPerfil">
-    <div class="modal-box" tabindex="-1">
-      <h2 id="tituloModalPerfil" style="margin:0; text-align:center;">Estilo e Fundo</h2>
-      
-      <label for="selectTema">Tema:</label>
-      <select id="selectTema">
-        <option value="claro">Tema Claro (Light)</option>
-        <option value="escuro">Tema Escuro (Dark 3D)</option>
-      </select>
-      
-      <label for="selectFundo">Plano de Fundo:</label>
-      <select id="selectFundo">
-        <option value="gta_6.png">GTA 6</option>
-        <option value="spider_man.png">Spider-Man</option>
-        <option value="combat_8.png">Combat 8</option>
-        <option value="prime.png">Prime</option>
-      </select>
-      
-      <button id="btnSalvarPerfil" type="button" class="btn-salvar">Aplicar Mudanças</button>
-      <button type="button" class="btn-fechar" data-close-modal="modalPerfil">Voltar</button>
-    </div>
-  </div>
-
-  <div id="modalLogin" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tituloModalLogin">
-    <div class="modal-box" tabindex="-1">
-      <h2 id="tituloModalLogin" style="margin:0; text-align:center;">Acesso administrativo</h2>
-      <form id="formLogin">
-        <label for="inputEmail">E-mail</label>
-        <input type="email" id="inputEmail" placeholder="seu@email.com" autocomplete="email" required>
-        <label for="inputSenha">Senha</label>
-        <input type="password" id="inputSenha" placeholder="Mínimo de 8 caracteres" minlength="8" autocomplete="current-password" required>
-        <p class="auth-note">O primeiro cadastro precisa confirmar o e-mail e solicitar autorização administrativa.</p>
-        <div class="auth-actions">
-          <button id="btnEntrar" type="submit" class="btn-salvar">Entrar</button>
-          <button id="btnCriarConta" type="button" class="btn-fechar">Criar primeiro acesso</button>
-          <button type="button" class="btn-fechar" data-close-modal="modalLogin">Voltar</button>
+      <form id="appForm" class="form-grid">
+        <input id="appId" type="hidden">
+        <div class="field">
+          <label for="appName">Nome do aplicativo</label>
+          <input id="appName" type="text" maxlength="60" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="appUrl">Link HTTPS</label>
+          <input id="appUrl" type="url" inputmode="url" placeholder="https://..." required>
+        </div>
+        <div class="field">
+          <label for="appDescription">Descrição</label>
+          <textarea id="appDescription" maxlength="180" placeholder="Explique em uma frase para que serve o app."></textarea>
+          <small>Até 180 caracteres.</small>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="appEmoji">Emoji</label>
+            <input id="appEmoji" type="text" maxlength="12" placeholder="Ex.: 📊" required>
+          </div>
+          <div class="field">
+            <label for="appCategory">Categoria</label>
+            <input id="appCategory" type="text" maxlength="40" list="categorySuggestions" placeholder="Ex.: Financeiro" required>
+            <datalist id="categorySuggestions"></datalist>
+          </div>
+        </div>
+        <div class="field">
+          <label for="appIconUrl">URL do logotipo <span aria-hidden="true">(opcional)</span></label>
+          <input id="appIconUrl" type="url" inputmode="url" placeholder="https://...">
+          <small>Se não informar, o emoji será usado.</small>
+        </div>
+        <div class="form-actions">
+          <button class="secondary-button" type="button" data-close-modal="appModal">Cancelar</button>
+          <button id="saveAppButton" class="primary-button" type="submit">Adicionar aplicativo</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="progress-overlay" role="status" aria-live="polite">
-    <div id="progress-text">Processando...</div>
-    <div class="progress-container">
-      <div id="progress-bar"></div>
+  <div id="appearanceModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="appearanceModalTitle">
+    <div class="modal" tabindex="-1">
+      <div class="modal-head">
+        <div>
+          <h2 id="appearanceModalTitle" class="modal-title">Aparência</h2>
+          <p class="modal-description">Escolha o contraste e a imagem de fundo.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="appearanceModal" aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+        </button>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="themeSelect">Tema</label>
+          <select id="themeSelect">
+            <option value="escuro">Escuro profundo</option>
+            <option value="claro">Claro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="backgroundSelect">Plano de fundo</label>
+          <select id="backgroundSelect">
+            <option value="spider_man.png">Spider-Man</option>
+            <option value="gta_6.png">GTA 6</option>
+            <option value="combat_8.png">Combat 8</option>
+            <option value="prime.png">Prime</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="secondary-button" type="button" data-close-modal="appearanceModal">Cancelar</button>
+          <button id="saveAppearanceButton" class="primary-button" type="button">Aplicar mudanças</button>
+        </div>
+      </div>
     </div>
   </div>
-  <div id="toast" role="status" aria-live="polite"></div>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.min.js"
-    integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti"
-    crossorigin="anonymous"></script>
+  <div id="loginModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+    <div class="modal" tabindex="-1">
+      <div class="modal-head">
+        <div>
+          <h2 id="loginModalTitle" class="modal-title">Acesso administrativo</h2>
+          <p class="modal-description">Entre para gerenciar sua galeria.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="loginModal" aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+        </button>
+      </div>
+      <form id="loginForm" class="form-grid">
+        <div class="field">
+          <label for="emailInput">E-mail</label>
+          <input id="emailInput" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="passwordInput">Senha</label>
+          <input id="passwordInput" type="password" minlength="8" autocomplete="current-password" required>
+        </div>
+        <p class="auth-note">Novos cadastros precisam confirmar o e-mail e receber autorização administrativa.</p>
+        <div class="form-actions">
+          <button id="createAccountButton" class="secondary-button" type="button">Criar acesso</button>
+          <button id="loginButton" class="primary-button" type="submit">Entrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-overlay" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmDescription">
+    <div class="modal" tabindex="-1">
+      <div class="modal-head">
+        <div>
+          <h2 id="confirmTitle" class="modal-title">Confirmar ação</h2>
+          <p id="confirmDescription" class="modal-description"></p>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="confirmModal" aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
+        </button>
+      </div>
+      <div class="form-actions">
+        <button class="secondary-button" type="button" data-close-modal="confirmModal">Cancelar</button>
+        <button id="confirmActionButton" class="danger-button" type="button">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="progressOverlay" class="progress-overlay" role="status" aria-live="polite">
+    <div class="progress-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <span id="progressText">Carregando...</span>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.min.js" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
   <script>
     'use strict';
 
     const SUPABASE_URL = 'https://nrypuyicgnenqiukgebj.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_PAu64quxhvQEUV6lYN0R0w_rxNHyfoD';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    const FUNDOS_PERMITIDOS = new Set(['gta_6.png', 'spider_man.png', 'combat_8.png', 'prime.png']);
-    const TEMAS_PERMITIDOS = new Set(['claro', 'escuro']);
 
-    let imagemFundoGlobal = localStorage.getItem('meuApp_Imagem') || "gta_6.png";
-    let temaSalvo = localStorage.getItem('meuApp_Tema') || "claro";
-    let ultimoElementoFocado = null;
+    const ALLOWED_BACKGROUNDS = new Set(['gta_6.png', 'spider_man.png', 'combat_8.png', 'prime.png']);
+    const ALLOWED_THEMES = new Set(['claro', 'escuro']);
+    const STORAGE_KEYS = {
+      favorites: 'alencarApps_favorites_v2',
+      recent: 'alencarApps_recent_v2',
+      background: 'meuApp_Imagem',
+      theme: 'meuApp_Tema'
+    };
+
+    const state = {
+      apps: [],
+      user: null,
+      isAdmin: false,
+      mode: 'todos',
+      category: null,
+      query: '',
+      favorites: readNumberSet(STORAGE_KEYS.favorites),
+      recent: readRecent(),
+      showArchived: false,
+      background: localStorage.getItem(STORAGE_KEYS.background) || 'spider_man.png',
+      theme: localStorage.getItem(STORAGE_KEYS.theme) || 'escuro',
+      dragId: null,
+      confirmAction: null,
+      lastFocused: null
+    };
+
+    const elements = {
+      grid: document.getElementById('appGrid'),
+      empty: document.getElementById('emptyState'),
+      emptyTitle: document.getElementById('emptyTitle'),
+      emptyDescription: document.getElementById('emptyDescription'),
+      status: document.getElementById('statusPanel'),
+      statusMessage: document.getElementById('statusMessage'),
+      search: document.getElementById('searchInput'),
+      searchClear: document.getElementById('searchClear'),
+      categoryNav: document.getElementById('categoryNav'),
+      mobileFilters: document.getElementById('mobileFilters'),
+      allCount: document.getElementById('allCount'),
+      favoriteCount: document.getElementById('favoriteCount'),
+      recentCount: document.getElementById('recentCount'),
+      resultSummary: document.getElementById('resultSummary'),
+      pageTitle: document.getElementById('pageTitle'),
+      pageDescription: document.getElementById('pageDescription'),
+      adminButton: document.getElementById('adminButton'),
+      adminButtonText: document.getElementById('adminButtonText'),
+      adminToolbar: document.getElementById('adminToolbar'),
+      adminNote: document.getElementById('adminNote'),
+      archivedButton: document.getElementById('archivedButton'),
+      dragHint: document.getElementById('dragHint'),
+      progress: document.getElementById('progressOverlay'),
+      progressText: document.getElementById('progressText'),
+      toast: document.getElementById('toast')
+    };
+
     let toastTimer = null;
-    let usuarioAtual = null;
-    let ehAdmin = false;
 
-    if (!FUNDOS_PERMITIDOS.has(imagemFundoGlobal)) imagemFundoGlobal = 'gta_6.png';
-    if (!TEMAS_PERMITIDOS.has(temaSalvo)) temaSalvo = 'claro';
-    if (temaSalvo === 'escuro') document.body.classList.add('dark-mode');
-    document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
-
-    function iniciarProgresso(mensagem) {
-      document.getElementById('progress-text').innerText = mensagem;
-      document.getElementById('progress-overlay').style.display = 'flex';
+    function icon(name) {
+      const paths = {
+        grid: '<rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect>',
+        star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path>',
+        clock: '<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>',
+        folder: '<path d="M3 7.5h7l2 2h9v9.5H3z"></path>',
+        more: '<circle cx="12" cy="5" r="1" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"></circle><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"></circle>',
+        share: '<circle cx="18" cy="5" r="2"></circle><circle cx="6" cy="12" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="m8 11 8-5M8 13l8 5"></path>',
+        external: '<path d="M14 5h5v5M13 11l6-6M19 13v6H5V5h6"></path>',
+        edit: '<path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"></path><path d="m14 7 3 3"></path>',
+        archive: '<path d="M4 7h16v13H4zM3 3h18v4H3zM9 11h6"></path>',
+        restore: '<path d="M4 7h16v13H4zM3 3h18v4H3z"></path><path d="m9 15 3-3 3 3M12 12v5"></path>',
+        trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>'
+      };
+      const wrapper = document.createElement('span');
+      wrapper.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (paths[name] || paths.grid) + '</svg>';
+      return wrapper.firstElementChild;
     }
 
-    function finalizarProgresso() {
-      document.getElementById('progress-overlay').style.display = 'none';
-    }
-
-    function mostrarToast(mensagem, tipo = 'sucesso') {
-      const toast = document.getElementById('toast');
-      clearTimeout(toastTimer);
-      toast.textContent = mensagem;
-      toast.classList.toggle('error', tipo === 'erro');
-      toast.classList.add('show');
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
-    }
-
-    function mostrarStatus(mensagem, permitirNovaTentativa = true) {
-      const status = document.getElementById('status-area');
-      document.getElementById('status-mensagem').textContent = mensagem;
-      document.getElementById('btnTentarNovamente').hidden = !permitirNovaTentativa;
-      status.classList.add('show');
-    }
-
-    function ocultarStatus() {
-      document.getElementById('status-area').classList.remove('show');
-    }
-
-    function toggleMenu() {
-      const sidebar = document.getElementById('sidebar');
-      const aberto = window.innerWidth <= 768
-        ? sidebar.classList.toggle('mobile-open')
-        : !sidebar.classList.toggle('collapsed');
-      document.getElementById('toggle-btn').setAttribute('aria-expanded', String(aberto));
-    }
-
-    function abrirModal(id) {
-      const overlay = document.getElementById(id);
-      ultimoElementoFocado = document.activeElement;
-      overlay.style.display = 'flex';
-      setTimeout(() => overlay.classList.add('show'), 10);
-      setTimeout(() => {
-        const primeiroCampo = overlay.querySelector('input:not([type="hidden"]), select, button');
-        primeiroCampo?.focus();
-      }, 40);
-
-      if (id === 'modalPerfil') {
-        document.getElementById('selectTema').value = temaSalvo;
-        document.getElementById('selectFundo').value = imagemFundoGlobal;
+    function readNumberSet(key) {
+      try {
+        const value = JSON.parse(localStorage.getItem(key) || '[]');
+        return new Set(Array.isArray(value) ? value.map(Number).filter(Number.isFinite) : []);
+      } catch {
+        return new Set();
       }
     }
 
-    function fecharModal(id) {
-      const overlay = document.getElementById(id);
-      overlay.classList.remove('show');
-      setTimeout(() => { overlay.style.display = 'none'; }, 300);
-      ultimoElementoFocado?.focus();
+    function readRecent() {
+      try {
+        const value = JSON.parse(localStorage.getItem(STORAGE_KEYS.recent) || '[]');
+        return Array.isArray(value)
+          ? value.filter((item) => Number.isFinite(Number(item.id)) && Number.isFinite(Number(item.at))).slice(0, 12)
+          : [];
+      } catch {
+        return [];
+      }
     }
 
-    function prepararNovoApp() {
-      const form = document.getElementById('formApp');
-      form.reset();
-      document.getElementById('inputId').value = '';
-      document.getElementById('tituloModalApp').textContent = 'Novo App';
-      document.getElementById('btnSalvarApp').textContent = 'Adicionar aplicativo';
-      abrirModal('modalApp');
+    function saveFavorites() {
+      localStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify([...state.favorites]));
     }
 
-    function aplicarTema(tema) {
-      if (!TEMAS_PERMITIDOS.has(tema)) return;
-      temaSalvo = tema;
-      document.body.classList.toggle('dark-mode', tema === 'escuro');
-      localStorage.setItem('meuApp_Tema', tema);
+    function saveRecent() {
+      localStorage.setItem(STORAGE_KEYS.recent, JSON.stringify(state.recent));
     }
 
-    function normalizarUrl(valor) {
-      const url = new URL(String(valor || '').trim());
-      if (url.protocol !== 'https:') throw new Error('Use somente links HTTPS.');
-      return url.href;
+    function normalizeUrl(value, optional = false) {
+      const trimmed = String(value || '').trim();
+      if (optional && !trimmed) return null;
+      const parsed = new URL(trimmed);
+      if (parsed.protocol !== 'https:') throw new Error('Use somente links HTTPS.');
+      return parsed.href;
     }
 
-    function normalizarApp(app) {
-      if (!app || !Number.isFinite(Number(app.id))) throw new Error('ID inválido.');
-      const nome = String(app.name || app.nome || '').trim().slice(0, 60);
-      const emoji = String(app.emoji || '').trim().slice(0, 12);
-      if (!nome || !emoji) throw new Error('Cadastro incompleto.');
+    function normalizeApp(record) {
+      if (!record || !Number.isFinite(Number(record.id))) throw new Error('ID inválido.');
+      const name = String(record.name || '').trim().slice(0, 60);
+      const emoji = String(record.emoji || '').trim().slice(0, 12);
+      const category = String(record.category || 'Outros').trim().slice(0, 40) || 'Outros';
+      const description = String(record.description || '').trim().slice(0, 180);
+      if (!name || !emoji) throw new Error('Cadastro incompleto.');
       return {
-        id: Number(app.id),
-        nome,
+        id: Number(record.id),
+        name,
         emoji,
-        url: normalizarUrl(app.url)
+        category,
+        description,
+        url: normalizeUrl(record.url),
+        iconUrl: record.icon_url ? normalizeUrl(record.icon_url, true) : null,
+        sortOrder: Number(record.sort_order) || 0,
+        isActive: record.is_active !== false
       };
     }
 
-    function atualizarInterfaceAdmin() {
-      document.querySelectorAll('.admin-only').forEach((elemento) => {
-        elemento.hidden = !ehAdmin;
-      });
-      const texto = document.getElementById('textoLogin');
-      texto.textContent = usuarioAtual
-        ? (ehAdmin ? `Sair (${usuarioAtual.email})` : 'Sair — acesso pendente')
-        : 'Entrar como administrador';
+    function backgroundAsset(value) {
+      const allowed = ALLOWED_BACKGROUNDS.has(value) ? value : 'spider_man.png';
+      return allowed.replace(/\.png$/, '.webp');
     }
 
-    async function verificarPermissaoAdmin(usuario) {
-      if (!usuario) return false;
-      const { data, error } = await supabaseClient
-        .from('app_admins')
-        .select('user_id')
-        .eq('user_id', usuario.id)
-        .maybeSingle();
+    function applyAppearance(theme = state.theme, background = state.background) {
+      state.theme = ALLOWED_THEMES.has(theme) ? theme : 'escuro';
+      state.background = ALLOWED_BACKGROUNDS.has(background) ? background : 'spider_man.png';
+      document.body.dataset.theme = state.theme;
+      document.documentElement.style.setProperty('--background-image', `url("${backgroundAsset(state.background)}")`);
+      document.querySelector('meta[name="theme-color"]').content = state.theme === 'escuro' ? '#07101e' : '#edf4fb';
+      localStorage.setItem(STORAGE_KEYS.theme, state.theme);
+      localStorage.setItem(STORAGE_KEYS.background, state.background);
+    }
+
+    function startProgress(message) {
+      elements.progressText.textContent = message;
+      elements.progress.style.display = 'grid';
+    }
+
+    function stopProgress() {
+      elements.progress.style.display = 'none';
+    }
+
+    function showToast(message, type = 'success') {
+      clearTimeout(toastTimer);
+      elements.toast.textContent = message;
+      elements.toast.classList.toggle('error', type === 'error');
+      elements.toast.classList.add('show');
+      toastTimer = setTimeout(() => elements.toast.classList.remove('show'), 4200);
+    }
+
+    function openModal(id) {
+      const overlay = document.getElementById(id);
+      state.lastFocused = document.activeElement;
+      overlay.classList.add('show');
+      const first = overlay.querySelector('input:not([type="hidden"]), select, textarea, button');
+      setTimeout(() => first?.focus(), 30);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+      state.lastFocused?.focus();
+    }
+
+    function activeRecentIds() {
+      return state.recent.map((item) => Number(item.id));
+    }
+
+    function categories() {
+      return [...new Set(state.apps.filter((app) => app.isActive || state.isAdmin).map((app) => app.category))]
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }
+
+    function filteredApps() {
+      let result = state.apps.filter((app) => state.isAdmin && state.showArchived ? !app.isActive : app.isActive);
+
+      if (state.mode === 'favoritos') result = result.filter((app) => state.favorites.has(app.id));
+      if (state.mode === 'recentes') {
+        const order = activeRecentIds();
+        result = result.filter((app) => order.includes(app.id)).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+      }
+      if (state.category) result = result.filter((app) => app.category === state.category);
+      if (state.query) {
+        const query = state.query.toLocaleLowerCase('pt-BR');
+        result = result.filter((app) =>
+          `${app.name} ${app.description} ${app.category}`.toLocaleLowerCase('pt-BR').includes(query)
+        );
+      }
+      return result;
+    }
+
+    function setMode(mode, category = null) {
+      state.mode = ['todos', 'favoritos', 'recentes'].includes(mode) ? mode : 'todos';
+      state.category = category;
+      state.showArchived = false;
+      renderAll();
+    }
+
+    function updateNavigation() {
+      document.querySelectorAll('[data-mode]').forEach((button) => {
+        button.classList.toggle('active', !state.category && button.dataset.mode === state.mode);
+      });
+      document.querySelectorAll('[data-category]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.category === state.category);
+      });
+      elements.archivedButton.classList.toggle('active', state.showArchived);
+
+      if (state.showArchived) {
+        elements.pageTitle.textContent = 'Aplicativos arquivados';
+        elements.pageDescription.textContent = 'Restaure ou exclua itens que não aparecem na galeria pública.';
+      } else if (state.category) {
+        elements.pageTitle.textContent = state.category;
+        elements.pageDescription.textContent = 'Aplicativos desta categoria.';
+      } else if (state.mode === 'favoritos') {
+        elements.pageTitle.textContent = 'Seus favoritos';
+        elements.pageDescription.textContent = 'Os aplicativos que você marcou para acesso rápido.';
+      } else if (state.mode === 'recentes') {
+        elements.pageTitle.textContent = 'Acessados recentemente';
+        elements.pageDescription.textContent = 'Retome de onde parou.';
+      } else {
+        elements.pageTitle.textContent = 'Bem-vindo de volta!';
+        elements.pageDescription.textContent = 'Acesse seus aplicativos com rapidez e praticidade.';
+      }
+    }
+
+    function renderNavigation() {
+      const categoryList = categories();
+      elements.categoryNav.replaceChildren();
+      categoryList.forEach((category) => {
+        const count = state.apps.filter((app) => app.isActive && app.category === category).length;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'nav-button';
+        button.dataset.category = category;
+        button.append(icon('folder'));
+        const label = document.createElement('span');
+        label.textContent = category;
+        const badge = document.createElement('span');
+        badge.className = 'nav-count';
+        badge.textContent = count;
+        button.append(label, badge);
+        button.addEventListener('click', () => setMode('todos', category));
+        elements.categoryNav.append(button);
+      });
+
+      elements.mobileFilters.replaceChildren();
+      const quickFilters = [
+        { label: 'Todos', mode: 'todos', icon: 'grid' },
+        { label: 'Favoritos', mode: 'favoritos', icon: 'star' },
+        { label: 'Recentes', mode: 'recentes', icon: 'clock' }
+      ];
+      quickFilters.forEach((item) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'filter-chip';
+        button.dataset.mode = item.mode;
+        button.append(icon(item.icon), document.createTextNode(item.label));
+        button.addEventListener('click', () => setMode(item.mode));
+        elements.mobileFilters.append(button);
+      });
+      categoryList.forEach((category) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'filter-chip';
+        button.dataset.category = category;
+        button.append(icon('folder'), document.createTextNode(category));
+        button.addEventListener('click', () => setMode('todos', category));
+        elements.mobileFilters.append(button);
+      });
+
+      const activeCount = state.apps.filter((app) => app.isActive).length;
+      elements.allCount.textContent = activeCount;
+      elements.favoriteCount.textContent = state.apps.filter((app) => app.isActive && state.favorites.has(app.id)).length;
+      elements.recentCount.textContent = state.apps.filter((app) => app.isActive && activeRecentIds().includes(app.id)).length;
+
+      const suggestions = document.getElementById('categorySuggestions');
+      suggestions.replaceChildren();
+      categoryList.forEach((category) => {
+        const option = document.createElement('option');
+        option.value = category;
+        suggestions.append(option);
+      });
+    }
+
+    function createIconBox(app) {
+      const box = document.createElement('div');
+      box.className = 'app-icon';
+      if (app.iconUrl) {
+        const image = document.createElement('img');
+        image.src = app.iconUrl;
+        image.alt = '';
+        image.loading = 'lazy';
+        image.referrerPolicy = 'no-referrer';
+        image.addEventListener('error', () => {
+          image.remove();
+          box.textContent = app.emoji;
+        }, { once: true });
+        box.append(image);
+      } else {
+        box.textContent = app.emoji;
+      }
+      return box;
+    }
+
+    function createIconButton(iconName, label, className = '') {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `icon-button ${className}`.trim();
+      button.setAttribute('aria-label', label);
+      button.title = label;
+      button.append(icon(iconName));
+      return button;
+    }
+
+    function toggleFavorite(app) {
+      if (state.favorites.has(app.id)) {
+        state.favorites.delete(app.id);
+        showToast(`${app.name} removido dos favoritos.`);
+      } else {
+        state.favorites.add(app.id);
+        showToast(`${app.name} adicionado aos favoritos.`);
+      }
+      saveFavorites();
+      renderAll();
+    }
+
+    function recordRecent(app) {
+      state.recent = [{ id: app.id, at: Date.now() }, ...state.recent.filter((item) => Number(item.id) !== app.id)].slice(0, 12);
+      saveRecent();
+    }
+
+    async function shareApp(app) {
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: app.name, text: app.description || 'Acesse este aplicativo:', url: app.url });
+        } else {
+          await navigator.clipboard.writeText(app.url);
+          showToast('Link copiado.');
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') showToast('Não foi possível compartilhar o link.', 'error');
+      }
+    }
+
+    function createCardMenu(app, anchor) {
+      document.querySelectorAll('.card-menu').forEach((menu) => menu.remove());
+      const menu = document.createElement('div');
+      menu.className = 'card-menu';
+
+      const addItem = (label, iconName, action, danger = false) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        if (danger) button.className = 'danger';
+        button.append(icon(iconName), document.createTextNode(label));
+        button.addEventListener('click', () => {
+          menu.remove();
+          action();
+        });
+        menu.append(button);
+      };
+
+        addItem('Compartilhar', 'share', () => shareApp(app));
+      if (state.isAdmin) {
+        addItem('Editar', 'edit', () => prepareEdit(app));
+        if (app.isActive) {
+          addItem('Mover para cima', 'restore', () => moveApp(app, -1));
+          addItem('Mover para baixo', 'archive', () => moveApp(app, 1));
+        }
+        addItem(app.isActive ? 'Arquivar' : 'Restaurar', app.isActive ? 'archive' : 'restore', () => toggleArchived(app));
+        addItem('Excluir definitivamente', 'trash', () => confirmDelete(app), true);
+      }
+
+      anchor.closest('.app-card').append(menu);
+      setTimeout(() => {
+        const close = (event) => {
+          if (!menu.contains(event.target) && event.target !== anchor) {
+            menu.remove();
+            document.removeEventListener('click', close);
+          }
+        };
+        document.addEventListener('click', close);
+      }, 0);
+    }
+
+    function renderCard(app) {
+      const card = document.createElement('article');
+      card.className = `app-card${app.isActive ? '' : ' is-archived'}`;
+      card.dataset.id = String(app.id);
+      card.draggable = state.isAdmin && state.mode === 'todos' && !state.category && !state.query && !state.showArchived;
+
+      const top = document.createElement('div');
+      top.className = 'card-top';
+      top.append(createIconBox(app));
+
+      const controls = document.createElement('div');
+      controls.className = 'card-controls';
+      const favorite = createIconButton('star', state.favorites.has(app.id) ? `Remover ${app.name} dos favoritos` : `Adicionar ${app.name} aos favoritos`);
+      favorite.classList.toggle('is-favorite', state.favorites.has(app.id));
+      favorite.addEventListener('click', () => toggleFavorite(app));
+      const more = createIconButton('more', `Mais opções para ${app.name}`);
+      more.addEventListener('click', (event) => {
+        event.stopPropagation();
+        createCardMenu(app, more);
+      });
+      controls.append(favorite, more);
+      top.append(controls);
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      const title = document.createElement('h2');
+      title.className = 'app-name';
+      title.textContent = app.name;
+      const description = document.createElement('p');
+      description.className = 'app-description';
+      description.textContent = app.description || 'Acesso rápido ao aplicativo.';
+      const category = document.createElement('span');
+      category.className = 'category-tag';
+      category.textContent = app.category;
+      body.append(title, description, category);
+      if (!app.isActive) {
+        const archived = document.createElement('span');
+        archived.className = 'archived-tag';
+        archived.textContent = 'Arquivado';
+        body.append(archived);
+      }
+
+      const footer = document.createElement('div');
+      footer.className = 'card-footer';
+      const open = document.createElement('a');
+      open.className = 'open-button';
+      open.href = app.url;
+      open.target = '_blank';
+      open.rel = 'noopener noreferrer';
+      open.append(document.createTextNode('Abrir'), icon('external'));
+      open.setAttribute('aria-label', `Abrir ${app.name} em nova aba`);
+      open.addEventListener('click', () => recordRecent(app));
+      if (!app.isActive) {
+        open.removeAttribute('href');
+        open.setAttribute('aria-disabled', 'true');
+        open.addEventListener('click', (event) => event.preventDefault());
+      }
+      const share = createIconButton('share', `Compartilhar ${app.name}`);
+      share.addEventListener('click', () => shareApp(app));
+      footer.append(open, share);
+
+      card.append(top, body, footer);
+      if (card.draggable) attachDragEvents(card, app);
+      return card;
+    }
+
+    function renderApps() {
+      const apps = filteredApps();
+      elements.grid.replaceChildren(...apps.map(renderCard));
+      elements.grid.hidden = apps.length === 0;
+      elements.empty.hidden = apps.length !== 0;
+      elements.status.hidden = true;
+      elements.resultSummary.textContent = `${apps.length} ${apps.length === 1 ? 'aplicativo' : 'aplicativos'}`;
+
+      if (!apps.length) {
+        if (state.mode === 'favoritos') {
+          elements.emptyTitle.textContent = 'Nenhum favorito ainda';
+          elements.emptyDescription.textContent = 'Use a estrela em um cartão para deixar seus apps preferidos sempre à mão.';
+        } else if (state.mode === 'recentes') {
+          elements.emptyTitle.textContent = 'Nenhum acesso recente';
+          elements.emptyDescription.textContent = 'Os aplicativos abertos por este navegador aparecerão aqui.';
+        } else if (state.showArchived) {
+          elements.emptyTitle.textContent = 'Nenhum app arquivado';
+          elements.emptyDescription.textContent = 'Os aplicativos arquivados ficam ocultos para os visitantes.';
+        } else {
+          elements.emptyTitle.textContent = 'Nenhum app encontrado';
+          elements.emptyDescription.textContent = 'Tente outro termo ou selecione uma categoria diferente.';
+        }
+      }
+      elements.dragHint.hidden = !(state.isAdmin && apps.length > 1 && state.mode === 'todos' && !state.category && !state.query && !state.showArchived);
+    }
+
+    function renderAdmin() {
+      elements.adminToolbar.hidden = !state.isAdmin;
+      elements.adminNote.hidden = !state.isAdmin;
+      elements.adminButton.classList.toggle('is-admin', state.isAdmin);
+      elements.adminButtonText.textContent = state.user ? (state.isAdmin ? 'Sair do admin' : 'Sair') : 'Admin';
+    }
+
+    function renderAll() {
+      renderNavigation();
+      updateNavigation();
+      renderAdmin();
+      renderApps();
+    }
+
+    function attachDragEvents(card, app) {
+      card.addEventListener('dragstart', (event) => {
+        state.dragId = app.id;
+        card.classList.add('is-dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', String(app.id));
+      });
+      card.addEventListener('dragend', () => {
+        state.dragId = null;
+        document.querySelectorAll('.app-card').forEach((item) => item.classList.remove('is-dragging', 'is-drag-over'));
+      });
+      card.addEventListener('dragover', (event) => {
+        if (!state.dragId || state.dragId === app.id) return;
+        event.preventDefault();
+        card.classList.add('is-drag-over');
+      });
+      card.addEventListener('dragleave', () => card.classList.remove('is-drag-over'));
+      card.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        card.classList.remove('is-drag-over');
+        if (!state.dragId || state.dragId === app.id) return;
+        await reorderApps(state.dragId, app.id);
+      });
+    }
+
+    async function reorderApps(sourceId, targetId) {
+      if (!state.isAdmin) return;
+      const ordered = state.apps.filter((app) => app.isActive).sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+      const sourceIndex = ordered.findIndex((app) => app.id === sourceId);
+      const targetIndex = ordered.findIndex((app) => app.id === targetId);
+      if (sourceIndex < 0 || targetIndex < 0) return;
+      const [moved] = ordered.splice(sourceIndex, 1);
+      ordered.splice(targetIndex, 0, moved);
+      startProgress('Salvando nova ordem...');
+      try {
+        const updates = ordered.map((item, index) =>
+          supabaseClient.from('menu_apps').update({ sort_order: index + 1, updated_at: new Date().toISOString() }).eq('id', item.id)
+        );
+        const results = await Promise.all(updates);
+        const failure = results.find((result) => result.error);
+        if (failure) throw failure.error;
+        showToast('Ordem dos aplicativos atualizada.');
+        await loadData();
+      } catch (error) {
+        showToast(`Não foi possível salvar a ordem. ${error.message}`, 'error');
+      } finally {
+        stopProgress();
+      }
+    }
+
+    async function moveApp(app, direction) {
+      const ordered = state.apps.filter((item) => item.isActive).sort((a, b) => a.sortOrder - b.sortOrder || a.id - b.id);
+      const currentIndex = ordered.findIndex((item) => item.id === app.id);
+      const target = ordered[currentIndex + direction];
+      if (!target) return showToast(direction < 0 ? 'Este app já é o primeiro.' : 'Este app já é o último.');
+      await reorderApps(app.id, target.id);
+    }
+
+    function prepareNewApp() {
+      document.getElementById('appForm').reset();
+      document.getElementById('appId').value = '';
+      document.getElementById('appModalTitle').textContent = 'Novo app';
+      document.getElementById('saveAppButton').textContent = 'Adicionar aplicativo';
+      openModal('appModal');
+    }
+
+    function prepareEdit(app) {
+      document.getElementById('appForm').reset();
+      document.getElementById('appId').value = app.id;
+      document.getElementById('appName').value = app.name;
+      document.getElementById('appUrl').value = app.url;
+      document.getElementById('appDescription').value = app.description;
+      document.getElementById('appEmoji').value = app.emoji;
+      document.getElementById('appCategory').value = app.category;
+      document.getElementById('appIconUrl').value = app.iconUrl || '';
+      document.getElementById('appModalTitle').textContent = 'Editar app';
+      document.getElementById('saveAppButton').textContent = 'Salvar alterações';
+      openModal('appModal');
+    }
+
+    async function saveApp(event) {
+      event.preventDefault();
+      if (!state.isAdmin) return showToast('Acesso administrativo necessário.', 'error');
+      const form = document.getElementById('appForm');
+      if (!form.reportValidity()) return;
+
+      const id = document.getElementById('appId').value;
+      let url;
+      let iconUrl;
+      try {
+        url = normalizeUrl(document.getElementById('appUrl').value);
+        iconUrl = normalizeUrl(document.getElementById('appIconUrl').value, true);
+      } catch (error) {
+        return showToast(error.message, 'error');
+      }
+
+      const record = {
+        name: document.getElementById('appName').value.trim().slice(0, 60),
+        url,
+        description: document.getElementById('appDescription').value.trim().slice(0, 180),
+        emoji: document.getElementById('appEmoji').value.trim().slice(0, 12),
+        category: document.getElementById('appCategory').value.trim().slice(0, 40),
+        icon_url: iconUrl,
+        updated_at: new Date().toISOString()
+      };
+      if (!record.name || !record.emoji || !record.category) return showToast('Preencha nome, emoji e categoria.', 'error');
+
+      startProgress(id ? 'Salvando alterações...' : 'Adicionando aplicativo...');
+      try {
+        const result = id
+          ? await supabaseClient.from('menu_apps').update(record).eq('id', Number(id))
+          : await supabaseClient.from('menu_apps').insert({ ...record, sort_order: state.apps.length + 1 });
+        if (result.error) throw result.error;
+        closeModal('appModal');
+        showToast(id ? 'Aplicativo atualizado.' : 'Aplicativo adicionado.');
+        await loadData();
+      } catch (error) {
+        showToast(`Não foi possível salvar. ${error.message}`, 'error');
+      } finally {
+        stopProgress();
+      }
+    }
+
+    function askConfirmation(title, description, buttonLabel, action) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmDescription').textContent = description;
+      document.getElementById('confirmActionButton').textContent = buttonLabel;
+      state.confirmAction = action;
+      openModal('confirmModal');
+    }
+
+    function toggleArchived(app) {
+      askConfirmation(
+        app.isActive ? 'Arquivar aplicativo?' : 'Restaurar aplicativo?',
+        app.isActive
+          ? `${app.name} deixará de aparecer para visitantes, mas continuará salvo.`
+          : `${app.name} voltará a aparecer na galeria pública.`,
+        app.isActive ? 'Arquivar' : 'Restaurar',
+        async () => {
+          const { error } = await supabaseClient
+            .from('menu_apps')
+            .update({ is_active: !app.isActive, updated_at: new Date().toISOString() })
+            .eq('id', app.id);
+          if (error) throw error;
+          showToast(app.isActive ? 'Aplicativo arquivado.' : 'Aplicativo restaurado.');
+        }
+      );
+    }
+
+    function confirmDelete(app) {
+      askConfirmation(
+        'Excluir definitivamente?',
+        `${app.name} será removido da galeria. Esta ação não pode ser desfeita pela interface.`,
+        'Excluir',
+        async () => {
+          const { error } = await supabaseClient.from('menu_apps').delete().eq('id', app.id);
+          if (error) throw error;
+          state.favorites.delete(app.id);
+          state.recent = state.recent.filter((item) => Number(item.id) !== app.id);
+          saveFavorites();
+          saveRecent();
+          showToast('Aplicativo excluído.');
+        }
+      );
+    }
+
+    async function runConfirmedAction() {
+      if (!state.confirmAction) return;
+      const action = state.confirmAction;
+      state.confirmAction = null;
+      closeModal('confirmModal');
+      startProgress('Processando...');
+      try {
+        await action();
+        await loadData();
+      } catch (error) {
+        showToast(`Não foi possível concluir. ${error.message}`, 'error');
+      } finally {
+        stopProgress();
+      }
+    }
+
+    async function saveAppearance() {
+      if (!state.isAdmin) return showToast('Acesso administrativo necessário.', 'error');
+      const theme = document.getElementById('themeSelect').value;
+      const background = document.getElementById('backgroundSelect').value;
+      if (!ALLOWED_THEMES.has(theme) || !ALLOWED_BACKGROUNDS.has(background)) return showToast('Configuração inválida.', 'error');
+
+      startProgress('Aplicando aparência...');
+      try {
+        const { error } = await supabaseClient
+          .from('menu_app_settings')
+          .update({ theme, background, updated_at: new Date().toISOString() })
+          .eq('id', 1);
+        if (error) throw error;
+        applyAppearance(theme, background);
+        closeModal('appearanceModal');
+        showToast('Aparência atualizada.');
+      } catch (error) {
+        showToast(`Não foi possível salvar a aparência. ${error.message}`, 'error');
+      } finally {
+        stopProgress();
+      }
+    }
+
+    async function checkAdmin(user) {
+      if (!user) return false;
+      const { data, error } = await supabaseClient.from('app_admins').select('user_id').eq('user_id', user.id).maybeSingle();
       if (error) throw error;
       return Boolean(data);
     }
 
-    async function solicitarAcessoAdmin(usuario) {
-      const { error } = await supabaseClient
-        .from('app_admin_requests')
-        .insert({ user_id: usuario.id, email: usuario.email });
+    async function requestAdminAccess(user) {
+      const { error } = await supabaseClient.from('app_admin_requests').insert({ user_id: user.id, email: user.email });
       if (error && error.code !== '23505') throw error;
     }
 
-    async function atualizarSessao(usuario) {
-      usuarioAtual = usuario || null;
-      ehAdmin = false;
-      if (usuarioAtual) {
-        ehAdmin = await verificarPermissaoAdmin(usuarioAtual);
-        if (!ehAdmin) await solicitarAcessoAdmin(usuarioAtual);
+    async function updateSession(user) {
+      state.user = user || null;
+      state.isAdmin = false;
+      if (state.user) {
+        state.isAdmin = await checkAdmin(state.user);
+        if (!state.isAdmin) await requestAdminAccess(state.user);
       }
-      atualizarInterfaceAdmin();
-      await carregarDados();
+      await loadData();
     }
 
-    async function entrarComoAdministrador(evento) {
-      evento.preventDefault();
-      const form = document.getElementById('formLogin');
+    async function login(event) {
+      event.preventDefault();
+      const form = document.getElementById('loginForm');
       if (!form.reportValidity()) return;
-
-      const email = document.getElementById('inputEmail').value.trim();
-      const password = document.getElementById('inputSenha').value;
-      const botao = document.getElementById('btnEntrar');
-      botao.disabled = true;
-      iniciarProgresso('Validando acesso...');
+      startProgress('Validando acesso...');
       try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: document.getElementById('emailInput').value.trim(),
+          password: document.getElementById('passwordInput').value
+        });
         if (error) throw error;
-        await atualizarSessao(data.user);
-        fecharModal('modalLogin');
-        mostrarToast(ehAdmin
-          ? 'Acesso administrativo liberado.'
-          : 'Login confirmado. Sua autorização administrativa está pendente.');
-      } catch (erro) {
-        mostrarToast(`Não foi possível entrar. ${erro.message}`, 'erro');
+        await updateSession(data.user);
+        closeModal('loginModal');
+        showToast(state.isAdmin ? 'Modo administrativo ativado.' : 'Login confirmado. A autorização está pendente.');
+      } catch (error) {
+        showToast(`Não foi possível entrar. ${error.message}`, 'error');
       } finally {
-        finalizarProgresso();
-        botao.disabled = false;
+        stopProgress();
       }
     }
 
-    async function criarPrimeiroAcesso() {
-      const form = document.getElementById('formLogin');
+    async function createAccount() {
+      const form = document.getElementById('loginForm');
       if (!form.reportValidity()) return;
-
-      const email = document.getElementById('inputEmail').value.trim();
-      const password = document.getElementById('inputSenha').value;
-      const botao = document.getElementById('btnCriarConta');
-      botao.disabled = true;
-      iniciarProgresso('Criando acesso...');
+      startProgress('Criando acesso...');
       try {
         const { data, error } = await supabaseClient.auth.signUp({
-          email,
-          password,
+          email: document.getElementById('emailInput').value.trim(),
+          password: document.getElementById('passwordInput').value,
           options: { emailRedirectTo: window.location.href.split('#')[0] }
         });
         if (error) throw error;
         if (data.session) {
-          await atualizarSessao(data.user);
-          fecharModal('modalLogin');
-          mostrarToast('Conta criada. A autorização administrativa foi solicitada.');
+          await updateSession(data.user);
+          closeModal('loginModal');
+          showToast('Conta criada. A autorização administrativa foi solicitada.');
         } else {
-          mostrarToast('Conta criada. Confirme o e-mail e depois faça o login.');
+          showToast('Conta criada. Confirme o e-mail e depois faça o login.');
         }
-      } catch (erro) {
-        mostrarToast(`Não foi possível criar o acesso. ${erro.message}`, 'erro');
+      } catch (error) {
+        showToast(`Não foi possível criar o acesso. ${error.message}`, 'error');
       } finally {
-        finalizarProgresso();
-        botao.disabled = false;
+        stopProgress();
       }
     }
 
-    async function abrirOuSairAdmin() {
-      if (!usuarioAtual) {
-        document.getElementById('formLogin').reset();
-        abrirModal('modalLogin');
+    async function adminAction() {
+      if (!state.user) {
+        document.getElementById('loginForm').reset();
+        openModal('loginModal');
         return;
       }
       const { error } = await supabaseClient.auth.signOut();
-      if (error) {
-        mostrarToast(`Não foi possível sair. ${error.message}`, 'erro');
-        return;
-      }
-      usuarioAtual = null;
-      ehAdmin = false;
-      atualizarInterfaceAdmin();
-      await carregarDados();
-      mostrarToast('Sessão encerrada.');
+      if (error) return showToast(`Não foi possível sair. ${error.message}`, 'error');
+      state.user = null;
+      state.isAdmin = false;
+      state.showArchived = false;
+      await loadData();
+      showToast('Sessão encerrada.');
     }
 
-    async function inicializarAplicacao() {
-      iniciarProgresso('Iniciando...');
+    async function loadData() {
+      elements.status.hidden = true;
+      try {
+        const [appsResult, settingsResult] = await Promise.all([
+          supabaseClient
+            .from('menu_apps')
+            .select('id, name, url, emoji, description, category, icon_url, sort_order, is_active')
+            .order('sort_order', { ascending: true })
+            .order('id', { ascending: true }),
+          supabaseClient.from('menu_app_settings').select('theme, background').eq('id', 1).maybeSingle()
+        ]);
+        if (appsResult.error) throw appsResult.error;
+        if (settingsResult.error) throw settingsResult.error;
+
+        let discarded = 0;
+        state.apps = (appsResult.data || []).flatMap((record) => {
+          try { return [normalizeApp(record)]; }
+          catch { discarded += 1; return []; }
+        });
+
+        if (settingsResult.data) {
+          const { theme, background } = settingsResult.data;
+          applyAppearance(ALLOWED_THEMES.has(theme) ? theme : state.theme, ALLOWED_BACKGROUNDS.has(background) ? background : state.background);
+        }
+        renderAll();
+        if (discarded) showToast(`${discarded} registro(s) inválido(s) não foram exibidos.`, 'error');
+      } catch (error) {
+        elements.grid.hidden = true;
+        elements.empty.hidden = true;
+        elements.status.hidden = false;
+        elements.statusMessage.textContent = `Não foi possível carregar os aplicativos. ${error.message}`;
+      }
+    }
+
+    async function initialize() {
+      applyAppearance();
+      startProgress('Preparando sua galeria...');
       try {
         const { data, error } = await supabaseClient.auth.getUser();
         if (error && error.name !== 'AuthSessionMissingError') throw error;
-        await atualizarSessao(data?.user || null);
-      } catch (erro) {
-        usuarioAtual = null;
-        ehAdmin = false;
-        atualizarInterfaceAdmin();
-        await carregarDados();
-        mostrarToast(`A sessão administrativa não pôde ser restaurada. ${erro.message}`, 'erro');
+        await updateSession(data?.user || null);
+      } catch (error) {
+        state.user = null;
+        state.isAdmin = false;
+        await loadData();
+        showToast(`A sessão não pôde ser restaurada. ${error.message}`, 'error');
       } finally {
-        finalizarProgresso();
+        stopProgress();
       }
     }
 
-    async function compartilharLink(url, nome) {
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: nome, text: 'Acesse esta ferramenta:', url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          mostrarToast('Link copiado!');
-        }
-      } catch (erro) {
-        if (erro.name !== 'AbortError') mostrarToast('Não foi possível compartilhar o link.', 'erro');
-      }
-    }
+    document.querySelectorAll('#primaryNav [data-mode], .bottom-nav [data-mode]').forEach((button) => {
+      button.addEventListener('click', () => setMode(button.dataset.mode));
+    });
+    elements.search.addEventListener('input', () => {
+      state.query = elements.search.value.trim();
+      elements.searchClear.hidden = !state.query;
+      renderAll();
+    });
+    elements.searchClear.addEventListener('click', () => {
+      elements.search.value = '';
+      state.query = '';
+      elements.searchClear.hidden = true;
+      elements.search.focus();
+      renderAll();
+    });
+    elements.adminButton.addEventListener('click', adminAction);
+    document.getElementById('newAppButton').addEventListener('click', prepareNewApp);
+    document.getElementById('appearanceButton').addEventListener('click', () => {
+      document.getElementById('themeSelect').value = state.theme;
+      document.getElementById('backgroundSelect').value = state.background;
+      openModal('appearanceModal');
+    });
+    elements.archivedButton.addEventListener('click', () => {
+      state.showArchived = !state.showArchived;
+      state.mode = 'todos';
+      state.category = null;
+      renderAll();
+    });
+    document.getElementById('appForm').addEventListener('submit', saveApp);
+    document.getElementById('loginForm').addEventListener('submit', login);
+    document.getElementById('createAccountButton').addEventListener('click', createAccount);
+    document.getElementById('saveAppearanceButton').addEventListener('click', saveAppearance);
+    document.getElementById('confirmActionButton').addEventListener('click', runConfirmedAction);
+    document.getElementById('retryButton').addEventListener('click', loadData);
+    document.getElementById('mobileCategoryButton').addEventListener('click', () => {
+      elements.mobileFilters.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      elements.mobileFilters.querySelector('[data-category]')?.focus();
+    });
 
-    function criarBotaoAcao(icone, titulo, aoClicar) {
-      const botao = document.createElement('button');
-      botao.type = 'button';
-      botao.className = 'card-btn';
-      botao.textContent = icone;
-      botao.title = titulo;
-      botao.setAttribute('aria-label', titulo);
-      botao.addEventListener('click', aoClicar);
-      return botao;
-    }
-
-    function renderizarApps(appsRecebidos) {
-      const container = document.getElementById('area-botoes');
-      container.replaceChildren();
-      let descartados = 0;
-
-      appsRecebidos.forEach((registro) => {
-        let app;
-        try {
-          app = normalizarApp(registro);
-        } catch {
-          descartados += 1;
-          return;
-        }
-
-        const card = document.createElement('article');
-        card.className = 'app-card';
-
-        const acoes = document.createElement('div');
-        acoes.className = 'card-actions';
-        if (ehAdmin) {
-          acoes.append(criarBotaoAcao('⚙️', `Editar ${app.nome}`, () => prepararEdicao(app)));
-        }
-        acoes.append(criarBotaoAcao('🔗', `Compartilhar ${app.nome}`, () => compartilharLink(app.url, app.nome)));
-
-        const link = document.createElement('a');
-        link.href = app.url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.style.cssText = 'text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;width:100%';
-        link.setAttribute('aria-label', `Abrir ${app.nome}`);
-
-        const emoji = document.createElement('div');
-        emoji.className = 'app-emoji';
-        emoji.textContent = app.emoji;
-
-        const nome = document.createElement('div');
-        nome.className = 'app-name';
-        nome.textContent = app.nome;
-
-        link.append(emoji, nome);
-        card.append(acoes, link);
-        container.appendChild(card);
-      });
-
-      if (!container.children.length) {
-        mostrarStatus('Nenhum aplicativo válido foi encontrado.', true);
-      } else {
-        ocultarStatus();
-      }
-      if (descartados) mostrarToast(`${descartados} registro(s) inválido(s) não foram exibidos.`, 'erro');
-    }
-
-    async function carregarDados() {
-      iniciarProgresso('Sincronizando...');
-      ocultarStatus();
-      try {
-        const [appsResultado, configResultado] = await Promise.all([
-          supabaseClient
-            .from('menu_apps')
-            .select('id, name, url, emoji, sort_order, is_active')
-            .order('sort_order', { ascending: true })
-            .order('id', { ascending: true }),
-          supabaseClient
-            .from('menu_app_settings')
-            .select('theme, background')
-            .eq('id', 1)
-            .maybeSingle()
-        ]);
-
-        if (appsResultado.error) throw appsResultado.error;
-        if (configResultado.error) throw configResultado.error;
-
-        const config = configResultado.data;
-        if (config) {
-          if (TEMAS_PERMITIDOS.has(config.theme)) aplicarTema(config.theme);
-          if (FUNDOS_PERMITIDOS.has(config.background)) {
-            imagemFundoGlobal = config.background;
-            document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
-            localStorage.setItem('meuApp_Imagem', imagemFundoGlobal);
-          }
-        }
-        renderizarApps(appsResultado.data || []);
-      } catch (erro) {
-        mostrarStatus(`Não foi possível carregar os aplicativos. ${erro.message}`, true);
-      } finally {
-        finalizarProgresso();
-      }
-    }
-
-    async function salvarApp(evento) {
-      evento.preventDefault();
-      if (!ehAdmin) {
-        mostrarToast('Entre com uma conta administrativa para salvar.', 'erro');
-        return;
-      }
-      const form = document.getElementById('formApp');
-      if (!form.reportValidity()) return;
-
-      const id = document.getElementById('inputId').value;
-      const nome = document.getElementById('inputNome').value.trim();
-      const emoji = document.getElementById('inputEmoji').value.trim();
-      let url;
-      try {
-        url = normalizarUrl(document.getElementById('inputUrl').value);
-      } catch (erro) {
-        mostrarToast(erro.message, 'erro');
-        return;
-      }
-      if (!nome || !emoji) {
-        mostrarToast('Preencha o nome e o emoji do aplicativo.', 'erro');
-        return;
-      }
-
-      const botao = document.getElementById('btnSalvarApp');
-      botao.disabled = true;
-      iniciarProgresso('Salvando aplicativo...');
-      try {
-        const registro = {
-          name: nome.slice(0, 60),
-          url,
-          emoji: emoji.slice(0, 12),
-          updated_at: new Date().toISOString()
-        };
-        const resultado = id
-          ? await supabaseClient.from('menu_apps').update(registro).eq('id', Number(id))
-          : await supabaseClient.from('menu_apps').insert({ ...registro, sort_order: 9999 });
-        if (resultado.error) throw resultado.error;
-
-        fecharModal('modalApp');
-        mostrarToast(id ? 'Aplicativo atualizado.' : 'Aplicativo adicionado.');
-        await carregarDados();
-      } catch (erro) {
-        mostrarToast(`Não foi possível salvar. ${erro.message}`, 'erro');
-      } finally {
-        finalizarProgresso();
-        botao.disabled = false;
-      }
-    }
-
-    function prepararEdicao(app) {
-      document.getElementById('formApp').reset();
-      document.getElementById('tituloModalApp').textContent = 'Editar App';
-      document.getElementById('btnSalvarApp').textContent = 'Salvar alterações';
-      document.getElementById('inputId').value = app.id;
-      document.getElementById('inputNome').value = app.nome;
-      document.getElementById('inputUrl').value = app.url;
-      document.getElementById('inputEmoji').value = app.emoji;
-      abrirModal('modalApp');
-    }
-
-    async function salvarPerfil() {
-      if (!ehAdmin) {
-        mostrarToast('Entre com uma conta administrativa para alterar a aparência.', 'erro');
-        return;
-      }
-      const botao = document.getElementById('btnSalvarPerfil');
-      botao.disabled = true;
-      iniciarProgresso('Sincronizando aparência...');
-      const tema = document.getElementById('selectTema').value;
-      const imagem = document.getElementById('selectFundo').value;
-
-      if (!TEMAS_PERMITIDOS.has(tema) || !FUNDOS_PERMITIDOS.has(imagem)) {
-        mostrarToast('Configuração de aparência inválida.', 'erro');
-        finalizarProgresso();
-        botao.disabled = false;
-        return;
-      }
-
-      try {
-        const { error } = await supabaseClient
-          .from('menu_app_settings')
-          .update({
-            theme: tema,
-            background: imagem,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', 1);
-        if (error) throw error;
-
-        imagemFundoGlobal = imagem;
-        aplicarTema(tema);
-        document.body.style.backgroundImage = `url('${imagemFundoGlobal}')`;
-        localStorage.setItem('meuApp_Imagem', imagemFundoGlobal);
-        fecharModal('modalPerfil');
-        mostrarToast('Aparência atualizada.');
-      } catch (erro) {
-        mostrarToast(`Não foi possível salvar a aparência. ${erro.message}`, 'erro');
-      } finally {
-        finalizarProgresso();
-        botao.disabled = false;
-      }
-    }
-
-    document.getElementById('toggle-btn').addEventListener('click', toggleMenu);
-    document.getElementById('btnNovoApp').addEventListener('click', prepararNovoApp);
-    document.getElementById('btnAparencia').addEventListener('click', () => abrirModal('modalPerfil'));
-    document.getElementById('btnLogin').addEventListener('click', abrirOuSairAdmin);
-    document.getElementById('btnTentarNovamente').addEventListener('click', carregarDados);
-    document.getElementById('formApp').addEventListener('submit', salvarApp);
-    document.getElementById('formLogin').addEventListener('submit', entrarComoAdministrador);
-    document.getElementById('btnCriarConta').addEventListener('click', criarPrimeiroAcesso);
-    document.getElementById('btnSalvarPerfil').addEventListener('click', salvarPerfil);
-    document.getElementById('selectTema').addEventListener('change', (evento) => aplicarTema(evento.target.value));
-
-    document.querySelectorAll('[data-close-modal]').forEach((botao) => {
-      botao.addEventListener('click', () => fecharModal(botao.dataset.closeModal));
+    document.querySelectorAll('[data-close-modal]').forEach((button) => {
+      button.addEventListener('click', () => closeModal(button.dataset.closeModal));
     });
     document.querySelectorAll('.modal-overlay').forEach((overlay) => {
-      overlay.addEventListener('click', (evento) => {
-        if (evento.target === overlay) fecharModal(overlay.id);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeModal(overlay.id);
       });
     });
-    document.addEventListener('keydown', (evento) => {
-      if (evento.key !== 'Escape') return;
-      const modalAberto = [...document.querySelectorAll('.modal-overlay')]
-        .find((modal) => modal.classList.contains('show'));
-      if (modalAberto) fecharModal(modalAberto.id);
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      document.querySelector('.modal-overlay.show')?.classList.remove('show');
+      document.querySelector('.card-menu')?.remove();
     });
 
-    supabaseClient.auth.onAuthStateChange((_evento, sessao) => {
-      const proximoUsuario = sessao?.user || null;
-      if ((proximoUsuario?.id || null) === (usuarioAtual?.id || null)) return;
-      setTimeout(() => {
-        atualizarSessao(proximoUsuario).catch((erro) => {
-          mostrarToast(`Falha ao atualizar a sessão. ${erro.message}`, 'erro');
-        });
-      }, 0);
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      const nextUser = session?.user || null;
+      if ((nextUser?.id || null) === (state.user?.id || null)) return;
+      setTimeout(() => updateSession(nextUser).catch((error) => showToast(`Falha ao atualizar a sessão. ${error.message}`, 'error')), 0);
     });
 
-    inicializarAplicacao();
+    initialize();
   </script>
 </body>
 </html>
