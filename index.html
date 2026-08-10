@@ -947,12 +947,6 @@
         </button>
       </div>
 
-      <div class="topbar-actions">
-        <button id="adminButton" class="admin-button" type="button">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.8 2.7 8.1 7 10 4.3-1.9 7-5.2 7-10V6l-7-3Z"></path><path d="M9.5 11.5 11 13l3.5-3.5"></path></svg>
-          <span id="adminButtonText">Admin</span>
-        </button>
-      </div>
     </header>
 
     <aside class="sidebar" aria-label="Navegação dos aplicativos">
@@ -978,10 +972,6 @@
         </div>
       </nav>
 
-      <div id="adminNote" class="admin-note" hidden>
-        <strong>Modo administrativo ativo</strong>
-        Arraste os cartões para reorganizar ou use o menu de cada app para editar e arquivar.
-      </div>
     </aside>
 
     <main class="content">
@@ -994,22 +984,6 @@
       </section>
 
       <div id="mobileFilters" class="mobile-filters" aria-label="Filtros rápidos"></div>
-
-      <section id="adminToolbar" class="admin-toolbar" aria-label="Ferramentas administrativas" hidden>
-        <span class="toolbar-copy"><strong>Administração:</strong> gerencie conteúdo, aparência e ordem.</span>
-        <button id="newAppButton" class="primary-button" type="button">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
-          Novo app
-        </button>
-        <button id="appearanceButton" class="secondary-button" type="button">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h5.5A3.5 3.5 0 0 0 21 9.5 6.5 6.5 0 0 0 14.5 3H12Z"></path><circle cx="7.5" cy="10" r=".8" fill="currentColor" stroke="none"></circle><circle cx="9" cy="6.8" r=".8" fill="currentColor" stroke="none"></circle><circle cx="13" cy="6.2" r=".8" fill="currentColor" stroke="none"></circle></svg>
-          Aparência
-        </button>
-        <button id="archivedButton" class="secondary-button" type="button">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v13H4zM3 3h18v4H3zM9 11h6"></path></svg>
-          Ver arquivados
-        </button>
-      </section>
 
       <section id="appGrid" class="app-grid" aria-label="Aplicativos"></section>
 
@@ -1053,7 +1027,7 @@
     <div class="modal" tabindex="-1">
       <div class="modal-head">
         <div>
-          <h2 id="appModalTitle" class="modal-title">Novo app</h2>
+          <h2 id="appModalTitle" class="modal-title">Editar app</h2>
           <p class="modal-description">Preencha as informações exibidas na galeria.</p>
         </div>
         <button class="modal-close" type="button" data-close-modal="appModal" aria-label="Fechar">
@@ -1091,9 +1065,14 @@
           <input id="appIconUrl" type="url" inputmode="url" placeholder="https://...">
           <small>Se não informar, o emoji será usado.</small>
         </div>
+        <div class="field">
+          <label for="editPin">PIN de segurança</label>
+          <input id="editPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" placeholder="Digite o PIN de 6 dígitos" required>
+          <small>O PIN é validado com segurança e não fica salvo no código do aplicativo.</small>
+        </div>
         <div class="form-actions">
           <button class="secondary-button" type="button" data-close-modal="appModal">Cancelar</button>
-          <button id="saveAppButton" class="primary-button" type="submit">Adicionar aplicativo</button>
+          <button id="saveAppButton" class="primary-button" type="submit">Salvar alterações</button>
         </div>
       </form>
     </div>
@@ -1132,35 +1111,6 @@
           <button id="saveAppearanceButton" class="primary-button" type="button">Aplicar mudanças</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div id="loginModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
-    <div class="modal" tabindex="-1">
-      <div class="modal-head">
-        <div>
-          <h2 id="loginModalTitle" class="modal-title">Acesso administrativo</h2>
-          <p class="modal-description">Entre para gerenciar sua galeria.</p>
-        </div>
-        <button class="modal-close" type="button" data-close-modal="loginModal" aria-label="Fechar">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
-        </button>
-      </div>
-      <form id="loginForm" class="form-grid">
-        <div class="field">
-          <label for="emailInput">E-mail</label>
-          <input id="emailInput" type="email" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="passwordInput">Senha</label>
-          <input id="passwordInput" type="password" minlength="8" autocomplete="current-password" required>
-        </div>
-        <p class="auth-note">Novos cadastros precisam confirmar o e-mail e receber autorização administrativa.</p>
-        <div class="form-actions">
-          <button id="createAccountButton" class="secondary-button" type="button">Criar acesso</button>
-          <button id="loginButton" class="primary-button" type="submit">Entrar</button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -1209,8 +1159,6 @@
 
     const state = {
       apps: [],
-      user: null,
-      isAdmin: false,
       mode: 'todos',
       category: null,
       query: '',
@@ -1241,11 +1189,6 @@
       resultSummary: document.getElementById('resultSummary'),
       pageTitle: document.getElementById('pageTitle'),
       pageDescription: document.getElementById('pageDescription'),
-      adminButton: document.getElementById('adminButton'),
-      adminButtonText: document.getElementById('adminButtonText'),
-      adminToolbar: document.getElementById('adminToolbar'),
-      adminNote: document.getElementById('adminNote'),
-      archivedButton: document.getElementById('archivedButton'),
       dragHint: document.getElementById('dragHint'),
       progress: document.getElementById('progressOverlay'),
       progressText: document.getElementById('progressText'),
@@ -1379,12 +1322,12 @@
     }
 
     function categories() {
-      return [...new Set(state.apps.filter((app) => app.isActive || state.isAdmin).map((app) => app.category))]
+      return [...new Set(state.apps.filter((app) => app.isActive).map((app) => app.category))]
         .sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }
 
     function filteredApps() {
-      let result = state.apps.filter((app) => state.isAdmin && state.showArchived ? !app.isActive : app.isActive);
+      let result = state.apps.filter((app) => app.isActive);
 
       if (state.mode === 'favoritos') result = result.filter((app) => state.favorites.has(app.id));
       if (state.mode === 'recentes') {
@@ -1571,16 +1514,8 @@
         menu.append(button);
       };
 
-        addItem('Compartilhar', 'share', () => shareApp(app));
-      if (state.isAdmin) {
-        addItem('Editar', 'edit', () => prepareEdit(app));
-        if (app.isActive) {
-          addItem('Mover para cima', 'restore', () => moveApp(app, -1));
-          addItem('Mover para baixo', 'archive', () => moveApp(app, 1));
-        }
-        addItem(app.isActive ? 'Arquivar' : 'Restaurar', app.isActive ? 'archive' : 'restore', () => toggleArchived(app));
-        addItem('Excluir definitivamente', 'trash', () => confirmDelete(app), true);
-      }
+      addItem('Editar', 'edit', () => prepareEdit(app));
+      addItem('Compartilhar', 'share', () => shareApp(app));
 
       anchor.closest('.app-card').append(menu);
       setTimeout(() => {
@@ -1598,7 +1533,7 @@
       const card = document.createElement('article');
       card.className = `app-card${app.isActive ? '' : ' is-archived'}`;
       card.dataset.id = String(app.id);
-      card.draggable = state.isAdmin && state.mode === 'todos' && !state.category && !state.query && !state.showArchived;
+      card.draggable = false;
 
       const top = document.createElement('div');
       top.className = 'card-top';
@@ -1683,7 +1618,7 @@
           elements.emptyDescription.textContent = 'Tente outro termo ou selecione uma categoria diferente.';
         }
       }
-      elements.dragHint.hidden = !(state.isAdmin && apps.length > 1 && state.mode === 'todos' && !state.category && !state.query && !state.showArchived);
+      elements.dragHint.hidden = true;
     }
 
     function renderAdmin() {
@@ -1696,7 +1631,6 @@
     function renderAll() {
       renderNavigation();
       updateNavigation();
-      renderAdmin();
       renderApps();
     }
 
@@ -1777,16 +1711,18 @@
       document.getElementById('appIconUrl').value = app.iconUrl || '';
       document.getElementById('appModalTitle').textContent = 'Editar app';
       document.getElementById('saveAppButton').textContent = 'Salvar alterações';
+      document.getElementById('editPin').value = '';
       openModal('appModal');
     }
 
     async function saveApp(event) {
       event.preventDefault();
-      if (!state.isAdmin) return showToast('Acesso administrativo necessário.', 'error');
       const form = document.getElementById('appForm');
       if (!form.reportValidity()) return;
 
       const id = document.getElementById('appId').value;
+      const pin = document.getElementById('editPin').value;
+      if (!id || !/^[0-9]{6}$/.test(pin)) return showToast('Digite o PIN de 6 dígitos.', 'error');
       let url;
       let iconUrl;
       try {
@@ -1807,14 +1743,22 @@
       };
       if (!record.name || !record.emoji || !record.category) return showToast('Preencha nome, emoji e categoria.', 'error');
 
-      startProgress(id ? 'Salvando alterações...' : 'Adicionando aplicativo...');
+      startProgress('Salvando alterações...');
       try {
-        const result = id
-          ? await supabaseClient.from('menu_apps').update(record).eq('id', Number(id))
-          : await supabaseClient.from('menu_apps').insert({ ...record, sort_order: state.apps.length + 1 });
-        if (result.error) throw result.error;
+        const { error } = await supabaseClient.rpc('update_menu_app_with_pin', {
+          p_id: Number(id),
+          p_name: record.name,
+          p_url: record.url,
+          p_description: record.description,
+          p_emoji: record.emoji,
+          p_category: record.category,
+          p_icon_url: record.icon_url,
+          p_pin: pin
+        });
+        if (error) throw error;
+        document.getElementById('editPin').value = '';
         closeModal('appModal');
-        showToast(id ? 'Aplicativo atualizado.' : 'Aplicativo adicionado.');
+        showToast('Aplicativo atualizado.');
         await loadData();
       } catch (error) {
         showToast(`Não foi possível salvar. ${error.message}`, 'error');
@@ -2026,14 +1970,7 @@
       applyAppearance();
       startProgress('Preparando sua galeria...');
       try {
-        const { data, error } = await supabaseClient.auth.getUser();
-        if (error && error.name !== 'AuthSessionMissingError') throw error;
-        await updateSession(data?.user || null);
-      } catch (error) {
-        state.user = null;
-        state.isAdmin = false;
         await loadData();
-        showToast(`A sessão não pôde ser restaurada. ${error.message}`, 'error');
       } finally {
         stopProgress();
       }
@@ -2054,22 +1991,7 @@
       elements.search.focus();
       renderAll();
     });
-    elements.adminButton.addEventListener('click', adminAction);
-    document.getElementById('newAppButton').addEventListener('click', prepareNewApp);
-    document.getElementById('appearanceButton').addEventListener('click', () => {
-      document.getElementById('themeSelect').value = state.theme;
-      document.getElementById('backgroundSelect').value = state.background;
-      openModal('appearanceModal');
-    });
-    elements.archivedButton.addEventListener('click', () => {
-      state.showArchived = !state.showArchived;
-      state.mode = 'todos';
-      state.category = null;
-      renderAll();
-    });
     document.getElementById('appForm').addEventListener('submit', saveApp);
-    document.getElementById('loginForm').addEventListener('submit', login);
-    document.getElementById('createAccountButton').addEventListener('click', createAccount);
     document.getElementById('saveAppearanceButton').addEventListener('click', saveAppearance);
     document.getElementById('confirmActionButton').addEventListener('click', runConfirmedAction);
     document.getElementById('retryButton').addEventListener('click', loadData);
@@ -2090,12 +2012,6 @@
       if (event.key !== 'Escape') return;
       document.querySelector('.modal-overlay.show')?.classList.remove('show');
       document.querySelector('.card-menu')?.remove();
-    });
-
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      const nextUser = session?.user || null;
-      if ((nextUser?.id || null) === (state.user?.id || null)) return;
-      setTimeout(() => updateSession(nextUser).catch((error) => showToast(`Falha ao atualizar a sessão. ${error.message}`, 'error')), 0);
     });
 
     initialize();
