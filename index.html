@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Alencar Apps — seus aplicativos em um só lugar.">
-  <meta name="app-release" content="2026-08-12-restore-add-app-1">
+  <meta name="app-release" content="2026-08-12-pin-delete-1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -1138,6 +1138,11 @@
           <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10M17 7 7 17"></path></svg>
         </button>
       </div>
+      <div id="confirmPinField" class="field" hidden>
+        <label for="confirmPin">PIN de segurança</label>
+        <input id="confirmPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" placeholder="Digite o PIN de 6 dígitos">
+        <small>O PIN é validado com segurança e não fica salvo no código do aplicativo.</small>
+      </div>
       <div class="form-actions">
         <button class="secondary-button" type="button" data-close-modal="confirmModal">Cancelar</button>
         <button id="confirmActionButton" class="danger-button" type="button">Confirmar</button>
@@ -1182,6 +1187,7 @@
       theme: localStorage.getItem(STORAGE_KEYS.theme) || 'escuro',
       dragId: null,
       confirmAction: null,
+      confirmRequiresPin: false,
       lastFocused: null
     };
 
@@ -1221,6 +1227,7 @@
         external: '<path d="M14 5h5v5M13 11l6-6M19 13v6H5V5h6"></path>',
         edit: '<path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"></path><path d="m14 7 3 3"></path>',
         plus: '<path d="M12 5v14M5 12h14"></path>',
+        trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>',
         archive: '<path d="M4 7h16v13H4zM3 3h18v4H3zM9 11h6"></path>',
         restore: '<path d="M4 7h16v13H4zM3 3h18v4H3z"></path><path d="m9 15 3-3 3 3M12 12v5"></path>',
         trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path>'
@@ -1528,6 +1535,7 @@
 
       addItem('Editar link', 'edit', () => prepareEdit(app));
       addItem('Compartilhar', 'share', () => shareApp(app));
+      addItem('Excluir', 'trash', () => confirmDelete(app), true);
 
       anchor.closest('.app-card').append(menu);
       setTimeout(() => {
@@ -1782,12 +1790,19 @@
       }
     }
 
-    function askConfirmation(title, description, buttonLabel, action) {
+    function askConfirmation(title, description, buttonLabel, action, requiresPin = false) {
       document.getElementById('confirmTitle').textContent = title;
       document.getElementById('confirmDescription').textContent = description;
       document.getElementById('confirmActionButton').textContent = buttonLabel;
+      const pinField = document.getElementById('confirmPinField');
+      const pinInput = document.getElementById('confirmPin');
+      pinField.hidden = !requiresPin;
+      pinInput.required = requiresPin;
+      pinInput.value = '';
       state.confirmAction = action;
+      state.confirmRequiresPin = requiresPin;
       openModal('confirmModal');
+      if (requiresPin) setTimeout(() => pinInput.focus(), 0);
     }
 
     function toggleArchived(app) {
@@ -1811,32 +1826,45 @@
     function confirmDelete(app) {
       askConfirmation(
         'Excluir definitivamente?',
-        `${app.name} será removido da galeria. Esta ação não pode ser desfeita pela interface.`,
-        'Excluir',
-        async () => {
-          const { error } = await supabaseClient.from('menu_apps').delete().eq('id', app.id);
+        `${app.name} será removido da galeria. Esta ação não pode ser desfeita.`,
+        'Excluir aplicativo',
+        async (pin) => {
+          const { error } = await supabaseClient.rpc('delete_menu_app_with_pin', {
+            p_id: app.id,
+            p_pin: pin
+          });
           if (error) throw error;
           state.favorites.delete(app.id);
           state.recent = state.recent.filter((item) => Number(item.id) !== app.id);
           saveFavorites();
           saveRecent();
           showToast('Aplicativo excluído.');
-        }
+        },
+        true
       );
     }
 
     async function runConfirmedAction() {
       if (!state.confirmAction) return;
       const action = state.confirmAction;
+      const requiresPin = state.confirmRequiresPin;
+      const pin = document.getElementById('confirmPin').value.trim();
+      if (requiresPin && !/^\d{6}$/.test(pin)) {
+        showToast('Digite o PIN de 6 dígitos.', 'error');
+        document.getElementById('confirmPin').focus();
+        return;
+      }
       state.confirmAction = null;
+      state.confirmRequiresPin = false;
       closeModal('confirmModal');
       startProgress('Processando...');
       try {
-        await action();
+        await action(pin);
         await loadData();
       } catch (error) {
         showToast(`Não foi possível concluir. ${error.message}`, 'error');
       } finally {
+        document.getElementById('confirmPin').value = '';
         stopProgress();
       }
     }
