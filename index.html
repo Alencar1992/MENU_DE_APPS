@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Alencar Apps — seus aplicativos em um só lugar.">
-  <meta name="app-release" content="2026-08-11-pages-redeploy-1">
+  <meta name="app-release" content="2026-08-12-fix-navigation-1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -1362,8 +1362,6 @@
       document.querySelectorAll('[data-category]').forEach((button) => {
         button.classList.toggle('active', button.dataset.category === state.category);
       });
-      elements.archivedButton.classList.toggle('active', state.showArchived);
-
       if (state.showArchived) {
         elements.pageTitle.textContent = 'Aplicativos arquivados';
         elements.pageDescription.textContent = 'Restaure ou exclua itens que não aparecem na galeria pública.';
