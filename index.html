@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Alencar Apps — seus aplicativos em um só lugar.">
-  <meta name="app-release" content="2026-08-12-pin-delete-1">
+  <meta name="app-release" content="2026-08-16-responsive-actions-1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -97,7 +97,9 @@
 
     button, input, select, textarea { font: inherit; }
 
-    button, a { -webkit-tap-highlight-color: transparent; }
+    button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+    button:active, a:active { transform: scale(.985); }
 
     button { color: inherit; }
 
@@ -1365,10 +1367,17 @@
       return result;
     }
 
+    function clearSearch() {
+      state.query = '';
+      elements.search.value = '';
+      elements.searchClear.hidden = true;
+    }
+
     function setMode(mode, category = null) {
       state.mode = ['todos', 'favoritos', 'recentes'].includes(mode) ? mode : 'todos';
       state.category = category;
       state.showArchived = false;
+      clearSearch();
       renderAll();
     }
 
@@ -1596,11 +1605,14 @@
       const open = document.createElement('a');
       open.className = 'open-button';
       open.href = app.url;
-      open.target = '_blank';
       open.rel = 'noopener noreferrer';
       open.append(document.createTextNode('Abrir'), icon('external'));
-      open.setAttribute('aria-label', `Abrir ${app.name} em nova aba`);
-      open.addEventListener('click', () => recordRecent(app));
+      open.setAttribute('aria-label', `Abrir ${app.name}`);
+      open.addEventListener('click', (event) => {
+        event.preventDefault();
+        recordRecent(app);
+        window.location.assign(app.url);
+      });
       if (!app.isActive) {
         open.removeAttribute('href');
         open.setAttribute('aria-disabled', 'true');
@@ -2028,11 +2040,13 @@
       renderAll();
     });
     elements.searchClear.addEventListener('click', () => {
-      elements.search.value = '';
-      state.query = '';
-      elements.searchClear.hidden = true;
+      clearSearch();
       elements.search.focus();
       renderAll();
+    });
+    document.querySelector('.brand').addEventListener('click', (event) => {
+      event.preventDefault();
+      setMode('todos');
     });
     document.getElementById('addAppButton').addEventListener('click', prepareNewApp);
     document.getElementById('appForm').addEventListener('submit', saveApp);
